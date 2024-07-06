@@ -1,4 +1,4 @@
-package tankrotationexample;
+package TankGame;
 
 public class GameConstants {
     public static final int GAME_SCREEN_WIDTH = 1280;

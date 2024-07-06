@@ -1,8 +1,8 @@
-package tankrotationexample;
+package TankGame;
 
-import tankrotationexample.game.GameWorld;
-import tankrotationexample.menus.EndGamePanel;
-import tankrotationexample.menus.StartMenuPanel;
+import TankGame.game.GameWorld;
+import TankGame.menus.EndGamePanel;
+import TankGame.menus.StartMenuPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;

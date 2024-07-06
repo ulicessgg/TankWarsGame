@@ -1,6 +1,6 @@
-package tankrotationexample.game;
+package TankGame.game;
 
-import tankrotationexample.GameConstants;
+import TankGame.GameConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -25,6 +25,8 @@ public class Tank{
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
+    private boolean ShootPressed;
+    private boolean PowerPressed;
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -55,6 +57,16 @@ public class Tank{
         this.LeftPressed = true;
     }
 
+    void toggleShootPressed()
+    {
+        this.ShootPressed = true;
+    }
+
+    void togglePowerPressed()
+    {
+        this.PowerPressed = true;
+    }
+
     void unToggleUpPressed() {
         this.UpPressed = false;
     }
@@ -69,6 +81,16 @@ public class Tank{
 
     void unToggleLeftPressed() {
         this.LeftPressed = false;
+    }
+
+    void unToggleShootPressed()
+    {
+        this.ShootPressed = false;
+    }
+
+    void unTogglePowerPressed()
+    {
+        this.PowerPressed = false;
     }
 
     void update() {
