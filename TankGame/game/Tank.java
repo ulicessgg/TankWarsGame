@@ -138,18 +138,19 @@ public class Tank{
     }
 
 
-    private void checkBorder() {
-        if (x < 30) {
-            x = 30;
+    private void checkBorder()
+    {
+        if (x < 32) {
+            x = 32;
         }
-        if (x >= GameConstants.GAME_SCREEN_WIDTH - 88) {
-            x = GameConstants.GAME_SCREEN_WIDTH - 88;
+        if (x >= GameConstants.GAME_SCREEN_WIDTH - 96) {
+            x = GameConstants.GAME_SCREEN_WIDTH - 96;
         }
-        if (y < 40) {
-            y = 40;
+        if (y < 32) {
+            y = 32;
         }
-        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 80) {
-            y = GameConstants.GAME_SCREEN_HEIGHT - 80;
+        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 120) {
+            y = GameConstants.GAME_SCREEN_HEIGHT - 120;
         }
     }
 
@@ -166,7 +167,7 @@ public class Tank{
         g2d.drawImage(this.img, rotation, null);
         g2d.setColor(Color.RED);
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
+        //g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
     }
 }

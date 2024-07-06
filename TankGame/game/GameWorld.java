@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author anthony-pc
@@ -21,6 +23,7 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage background;
     private Tank t1;
     private Tank t2;
+    private Map<Point, Wall> walls = new HashMap<>();
     private final Launcher lf;
     private long tick = 0;
 
@@ -75,6 +78,7 @@ public class GameWorld extends JPanel implements Runnable {
                 GameConstants.GAME_SCREEN_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
 
+        // adds the background bitmap to the game
         try
         {
             background = ImageIO.read(
@@ -88,6 +92,7 @@ public class GameWorld extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
+        // sets the images for both player tanks
         BufferedImage t1img = null;
         try
         {
@@ -107,10 +112,6 @@ public class GameWorld extends JPanel implements Runnable {
         BufferedImage t2img = null;
         try
         {
-            /*
-             * note class loaders read files from the out folder (build folder in Netbeans) and not the
-             * current working directory. When running a jar, class loaders will read from within the jar.
-             */
             t2img = ImageIO.read(
                     Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/tank2.png"),
                             "Could not find tank2.png")
@@ -122,6 +123,35 @@ public class GameWorld extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
+        // sets the image for the unbreakable barrier walls
+        BufferedImage wall1Img = null;
+        try
+        {
+            wall1Img = ImageIO.read(
+                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall1.png"),
+                            "Could not find wall1.png")
+            );
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        // creates the barrier walls
+        for(int i = 0; i < 41; i++)
+        {
+            walls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false));
+            walls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false));
+
+        }
+        for(int i = 1; i < 30; i++)
+        {
+            walls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false));
+            walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false));
+        }
+
+        // creates both player tanks
         t1 = new Tank(300, 300, 0, 0, (short) 0, t1img);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
         this.lf.getJf().addKeyListener(tc1);
@@ -138,5 +168,9 @@ public class GameWorld extends JPanel implements Runnable {
         g2.drawImage(background, 0, 0, getWidth(), getHeight(), this);
         this.t1.drawImage(g2);
         this.t2.drawImage(g2);
+        for(Wall wall : walls.values())
+        {
+            wall.drawImage(g2);
+        }
     }
 }
