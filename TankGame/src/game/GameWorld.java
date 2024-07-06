@@ -1,8 +1,8 @@
-package TankGame.src.game;
+package tankrotationexample.game;
 
 
-import TankGame.src.GameConstants;
-import TankGame.src.Launcher;
+import tankrotationexample.GameConstants;
+import tankrotationexample.Launcher;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
