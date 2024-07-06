@@ -138,6 +138,21 @@ public class GameWorld extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
+        // sets the image for the breakable barrier walls
+        BufferedImage wall2Img = null;
+        try
+        {
+            wall2Img = ImageIO.read(
+                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall2.png"),
+                            "Could not find wall1.png")
+            );
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+
         // creates the barrier walls
         for(int i = 0; i < 41; i++)
         {
@@ -151,12 +166,31 @@ public class GameWorld extends JPanel implements Runnable {
             walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false));
         }
 
+        // creates the obstacle walls
+        for(int i = 6; i < 35; i++)
+        {
+            if(i < 15 || i > 25)
+            {
+                walls.put(new Point(i, 384), new Wall(i * wall1Img.getWidth(), 384, wall2Img, false));
+                walls.put(new Point(i, 576), new Wall(i * wall1Img.getWidth(), 576, wall2Img, false));
+            }
+        }
+
+        for(int i = 4; i < 27; i++)
+        {
+            if(i < 12 || i > 18)
+            {
+                walls.put(new Point(448, i), new Wall(448, i * wall1Img.getWidth(), wall2Img, false));
+                walls.put(new Point(832, i), new Wall(832, i * wall1Img.getWidth(), wall2Img, false));
+            }
+        }
+
         // creates both player tanks
-        t1 = new Tank(300, 300, 0, 0, (short) 0, t1img);
+        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(980, 300, 0, 0, (short) 180, t2img);
+        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
         this.lf.getJf().addKeyListener(tc2);
     }

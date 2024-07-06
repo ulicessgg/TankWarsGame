@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
  */
 public class Tank{
 
+    private int lives;
+    private double health;
     private float x;
     private float y;
     private float vx;
@@ -28,7 +30,9 @@ public class Tank{
     private boolean ShootPressed;
     private boolean PowerPressed;
 
-    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
+    Tank(int lives, double health, float x, float y, float vx, float vy, float angle, BufferedImage img) {
+        this.lives = lives;
+        this.health = health;
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -109,8 +113,6 @@ public class Tank{
         if (this.RightPressed) {
             this.rotateRight();
         }
-
-
     }
 
     private void rotateLeft() {
