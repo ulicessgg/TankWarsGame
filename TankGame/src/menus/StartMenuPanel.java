@@ -1,7 +1,7 @@
 package tankrotationexample.menus;
 
 import tankrotationexample.Launcher;
-import tankrotationexample.resources.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
