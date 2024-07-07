@@ -4,6 +4,8 @@ import TankGame.GameConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
@@ -13,10 +15,15 @@ public class Tank{
 
     private int lives;
     private double health;
+
+    private Map<Point, Wall> wallIntel;
     private float x;
     private float y;
     private float vx;
     private float vy;
+    private float cx;
+    private float cy;
+    private int buffer = -480;
     private float angle;
 
     private float R = 5;
@@ -30,20 +37,31 @@ public class Tank{
     private boolean ShootPressed;
     private boolean PowerPressed;
 
-    Tank(int lives, double health, float x, float y, float vx, float vy, float angle, BufferedImage img) {
+    Tank(int lives, double health, float x, float y, float vx, float vy, float angle, BufferedImage img, Map<Point, Wall> wallIntel) {
         this.lives = lives;
         this.health = health;
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
+        this.cx = x + buffer;
+        this.cy = y + buffer;
         this.img = img;
         this.angle = angle;
+        this.wallIntel = wallIntel;
     }
 
     void setX(float x){ this.x = x; }
 
     void setY(float y) { this. y = y;}
+
+    float getX(){ return x; }
+
+    float getY() { return y;}
+
+    int getCameraX(){ return (int) cx; }
+
+    int getCameraY() { return (int) cy;}
 
     void toggleUpPressed() {
         this.UpPressed = true;

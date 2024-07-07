@@ -19,8 +19,12 @@ import java.util.HashMap;
  */
 public class GameWorld extends JPanel implements Runnable {
 
+    private Graphics2D buffer;
     private BufferedImage world;
     private BufferedImage background;
+    private BufferedImage player1;
+    private BufferedImage player2;
+    private BufferedImage miniMap;
     private Tank t1;
     private Tank t2;
     private Map<Point, Wall> walls = new HashMap<>();
@@ -156,14 +160,14 @@ public class GameWorld extends JPanel implements Runnable {
         // creates the barrier walls
         for(int i = 0; i < 41; i++)
         {
-            walls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false));
-            walls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false));
+            walls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false, false));
+            walls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false, false));
 
         }
         for(int i = 1; i < 30; i++)
         {
-            walls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false));
-            walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false));
+            walls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false, false));
+            walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false, false));
         }
 
         // creates the obstacle walls
@@ -171,8 +175,8 @@ public class GameWorld extends JPanel implements Runnable {
         {
             if(i < 15 || i > 25)
             {
-                walls.put(new Point(i, 384), new Wall(i * wall1Img.getWidth(), 384, wall2Img, false));
-                walls.put(new Point(i, 576), new Wall(i * wall1Img.getWidth(), 576, wall2Img, false));
+                walls.put(new Point(i, 384), new Wall(i * wall1Img.getWidth(), 384, wall2Img, true, false));
+                walls.put(new Point(i, 576), new Wall(i * wall1Img.getWidth(), 576, wall2Img, true, false));
             }
         }
 
@@ -180,17 +184,17 @@ public class GameWorld extends JPanel implements Runnable {
         {
             if(i < 12 || i > 18)
             {
-                walls.put(new Point(448, i), new Wall(448, i * wall1Img.getWidth(), wall2Img, false));
-                walls.put(new Point(832, i), new Wall(832, i * wall1Img.getWidth(), wall2Img, false));
+                walls.put(new Point(448, i), new Wall(448, i * wall1Img.getWidth(), wall2Img, true, false));
+                walls.put(new Point(832, i), new Wall(832, i * wall1Img.getWidth(), wall2Img, true, false));
             }
         }
 
         // creates both player tanks
-        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img);
+        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img, walls);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img);
+        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img, walls);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
         this.lf.getJf().addKeyListener(tc2);
     }
@@ -199,12 +203,18 @@ public class GameWorld extends JPanel implements Runnable {
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-        this.t1.drawImage(g2);
-        this.t2.drawImage(g2);
+        g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+
         for(Wall wall : walls.values())
         {
             wall.drawImage(g2);
         }
+
+        this.t1.drawImage(g2);
+        this.t2.drawImage(g2);
+
+        //this.miniMap = world;
+
+        //g2.drawImage (miniMap, , , , , null);
     }
 }
