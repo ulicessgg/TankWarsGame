@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * @author anthony-pc
+ * @author ulicessgg
+ * using demo code provided by anthony-pc as base code
  */
 public class GameWorld extends JPanel implements Runnable {
 

@@ -27,7 +27,7 @@ public class Tank{
     private float angle;
 
     private float R = 5;
-    private float ROTATIONSPEED = 3.0f;
+    private float ROTATIONSPEED = 1.50f;
 
     private BufferedImage img;
     private boolean UpPressed;
@@ -131,32 +131,117 @@ public class Tank{
         if (this.RightPressed) {
             this.rotateRight();
         }
+
+        System.out.println(angle); // this is for debugging the collision
     }
 
-    private void rotateLeft() {
+    private void rotateLeft()
+    {
         this.angle -= this.ROTATIONSPEED;
+
+        if(this.angle < 0)
+        {
+            this.angle = 360;
+        }
     }
 
-    private void rotateRight() {
+    private void rotateRight()
+    {
         this.angle += this.ROTATIONSPEED;
+
+        if(this.angle > 360)
+        {
+            this.angle = 0;
+        }
     }
 
-    private void moveBackwards() {
+    private void moveBackwards()
+    {
+        float tempX = x;
+        float tempY = y;
+
         vx =  Math.round(R * Math.cos(Math.toRadians(angle)));
         vy =  Math.round(R * Math.sin(Math.toRadians(angle)));
-        x -= vx;
-        y -= vy;
-       checkBorder();
+        if(!checkCollision(x - vx, y - vy))
+        {
+            x -= vx;
+            y -= vy;
+            checkBorder();
+        }
+        else
+        {
+            if(angle <= 90 && angle >= 270)
+            {
+                x = tempX + 1;
+            }
+            if(angle <= 180 && angle >= 0)
+            {
+                y = tempY + 1;
+            }
+            if(angle <= 90 && angle >= 0)
+            {
+                x = tempX + 1;
+                y = tempY + 1;
+            }
+            if(angle <= 270 && angle >= 90)
+            {
+                x = tempX - 1;
+            }
+            if(angle <= 360 && angle >= 180)
+            {
+                y = tempY - 1;
+            }
+            if(angle <= 270 && angle >= 180)
+            {
+                x = tempX - 1;
+                y = tempY - 1;
+            }
+        }
     }
 
-    private void moveForwards() {
+    private void moveForwards()
+    {
+        float tempX = x;
+        float tempY = y;
+
         vx = Math.round(R * Math.cos(Math.toRadians(angle)));
         vy = Math.round(R * Math.sin(Math.toRadians(angle)));
-        x += vx;
-        y += vy;
-        checkBorder();
+        if(!checkCollision(x + vx, y + vy))
+        {
+            x += vx;
+            y += vy;
+            checkBorder();
+        }
+        else
+        {
+            if(angle <= 90 && angle >= 270)
+            {
+                x = tempX - 1;
+            }
+            if(angle <= 180 && angle >= 0)
+            {
+                y = tempY - 1;
+            }
+            if(angle <= 90 && angle >= 0)
+            {
+                x = tempX - 1;
+                y = tempY - 1;
+            }
+            if(angle <= 270 && angle >= 90)
+            {
+                x = tempX + 1;
+            }
+            if(angle <= 360 && angle >= 180)
+            {
+                y = tempY + 1;
+            }
+            if(angle <= 270 && angle >= 180)
+            {
+                x = tempX + 1;
+                y = tempY + 1;
+            }
+        }
     }
-
 
     private void checkBorder()
     {
@@ -172,6 +257,24 @@ public class Tank{
         if (y >= GameConstants.GAME_SCREEN_HEIGHT - 120) {
             y = GameConstants.GAME_SCREEN_HEIGHT - 120;
         }
+    }
+
+    private boolean checkCollision(float x, float y)
+    {
+        Rectangle temp = new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
+        for(Wall wall : wallIntel.values())
+        {
+            if(wall.isBreakable() && wall.getBounds().intersects((getBounds())))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Rectangle getBounds()
+    {
+        return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
     }
 
     @Override
