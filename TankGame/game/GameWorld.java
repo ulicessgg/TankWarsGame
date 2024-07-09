@@ -148,7 +148,7 @@ public class GameWorld extends JPanel implements Runnable {
         {
             wall2Img = ImageIO.read(
                     Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall2.png"),
-                            "Could not find wall2.png")
+                            "Could not find wall1.png")
             );
         }
         catch (IOException ex)
