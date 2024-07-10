@@ -47,7 +47,17 @@ public class GameWorld extends JPanel implements Runnable {
                 this.tick++;
                 this.t1.update();
                 this.t2.update(); // update tank
+                tankCollision();
                 this.repaint();   // redraw game
+
+                if(gameOver())
+                {
+                    String winner = getWinner();
+                    System.out.println(winner);
+                    SwingUtilities.invokeLater(() -> lf.setFrame("end"));
+                    break;
+                }
+
                 /*
                  * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
                  * loop run at a fixed rate per/sec. 
@@ -67,17 +77,18 @@ public class GameWorld extends JPanel implements Runnable {
     public void resetGame()
     {
         this.tick = 0;
-        this.t1.setX(300);
-        this.t1.setY(300);
-        this.t2.setX(980);
-        this.t2.setY(300);
+        this.t1.setX(32);
+        this.t1.setY(32);
+        this.t2.setX(1232);
+        this.t2.setY(912);
     }
 
     /**
      * Load all resources for Tank Wars Game. Set all Game Objects to their
      * initial state as well.
      */
-    public void InitializeGame()
+
+    public void loadWorld()
     {
         this.world = new BufferedImage(GameConstants.GAME_SCREEN_WIDTH,
                 GameConstants.GAME_SCREEN_HEIGHT,
@@ -96,8 +107,12 @@ public class GameWorld extends JPanel implements Runnable {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
+    }
 
+    public void loadTanks()
+    {
         // sets the images for both player tanks
+        // player one
         BufferedImage t1img = null;
         try
         {
@@ -107,13 +122,13 @@ public class GameWorld extends JPanel implements Runnable {
              */
             t1img = ImageIO.read(
                     Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/tank1.png"),
-                    "Could not find tank1.png")
+                            "Could not find tank1.png")
             );
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
-
+        // player two
         BufferedImage t2img = null;
         try
         {
@@ -128,27 +143,24 @@ public class GameWorld extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
+        // creates both player tanks
+        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img, walls);
+        TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
+        this.lf.getJf().addKeyListener(tc1);
+
+        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img, walls);
+        TankControl tc2 = new TankControl(t2, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
+        this.lf.getJf().addKeyListener(tc2);
+    }
+
+    public void loadUnbreakableWalls()
+    {
         // sets the image for the unbreakable barrier walls
         BufferedImage wall1Img = null;
         try
         {
             wall1Img = ImageIO.read(
                     Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall1.png"),
-                            "Could not find wall1.png")
-            );
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        // sets the image for the breakable barrier walls
-        BufferedImage wall2Img = null;
-        try
-        {
-            wall2Img = ImageIO.read(
-                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall2.png"),
                             "Could not find wall1.png")
             );
         }
@@ -170,14 +182,32 @@ public class GameWorld extends JPanel implements Runnable {
             walls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false, false));
             walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false, false));
         }
+    }
+
+    public void loadBreakableWalls()
+    {
+        // sets the image for the breakable barrier walls
+        BufferedImage wall2Img = null;
+        try
+        {
+            wall2Img = ImageIO.read(
+                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/wall2.png"),
+                            "Could not find wall1.png")
+            );
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
 
         // creates the obstacle walls
         for(int i = 6; i < 35; i++)
         {
             if(i < 15 || i > 25)
             {
-                walls.put(new Point(i, 384), new Wall(i * wall1Img.getWidth(), 384, wall2Img, true, false));
-                walls.put(new Point(i, 576), new Wall(i * wall1Img.getWidth(), 576, wall2Img, true, false));
+                walls.put(new Point(i, 384), new Wall(i * wall2Img.getWidth(), 384, wall2Img, true, false));
+                walls.put(new Point(i, 576), new Wall(i * wall2Img.getWidth(), 576, wall2Img, true, false));
             }
         }
 
@@ -185,34 +215,80 @@ public class GameWorld extends JPanel implements Runnable {
         {
             if(i < 12 || i > 18)
             {
-                walls.put(new Point(448, i), new Wall(448, i * wall1Img.getWidth(), wall2Img, true, false));
-                walls.put(new Point(832, i), new Wall(832, i * wall1Img.getWidth(), wall2Img, true, false));
+                walls.put(new Point(448, i), new Wall(448, i * wall2Img.getWidth(), wall2Img, true, false));
+                walls.put(new Point(832, i), new Wall(832, i * wall2Img.getWidth(), wall2Img, true, false));
             }
         }
+    }
 
-        // creates both player tanks
-        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img, walls);
-        TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
-        this.lf.getJf().addKeyListener(tc1);
+    public void InitializeGame()
+    {
+        loadWorld();
+        loadTanks();
+        loadUnbreakableWalls();
+        loadBreakableWalls();
+    }
 
-        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img, walls);
-        TankControl tc2 = new TankControl(t2, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
-        this.lf.getJf().addKeyListener(tc2);
+    public void tankCollision()
+    {
+        if(t1.getBounds().intersects(t2.getBounds()) && t2.getBounds().intersects(t1.getBounds()))
+        {
+            if(t1.getLives() > 0 && t2.getLives() > 0)
+            {
+                t1.loseLife();
+                t2.loseLife();
+                resetGame();
+            }
+        }
+    }
+
+    public boolean gameOver()
+    {
+        return t1.getLives() == 0 || t2.getLives() == 0;
+    }
+
+    public String getWinner()
+    {
+        String winner = null;
+
+        if(t1.getLives() > 0 && t2.getLives() == 0)
+        {
+            winner = "Player1";
+        }
+        if(t1.getLives() == 0 && t2.getLives() > 0)
+        {
+            winner = "Player2";
+        }
+        if(t1.getLives() == 0 && t2.getLives() == 0)
+        {
+            winner = "Draw";
+        }
+
+        return winner;
+    }
+
+    public void pickUpItem()
+    {
+
     }
 
     @Override
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        Graphics2D buffer = world.createGraphics();
+
+        buffer.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
         for(Wall wall : walls.values())
         {
-            wall.drawImage(g2);
+            wall.drawImage(buffer);
         }
 
-        this.t1.drawImage(g2);
-        this.t2.drawImage(g2);
+        this.t1.drawImage(buffer);
+        this.t2.drawImage(buffer);
+
+        g2.drawImage(world, 0, 0, null);
 
         //this.miniMap = world;
 
