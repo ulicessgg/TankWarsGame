@@ -1,34 +1,53 @@
 package TankGame.game;
 
 import TankGame.GameConstants;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Map;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author ulicessgg
  * using demo code provided by anthony-pc as base code
  */
-public class Rocket
-{
+public class Rocket{
 
     private Map<Point, Wall> wallIntel;
     private float x;
     private float y;
+
+    private float vx;
+    private float vy;
     private float angle;
+
     private float R = 6;
     private BufferedImage img;
-    private boolean hot;
+    private BufferedImage expimg;
+    private boolean isDestroyed = false;
+    private boolean isInert = false;
 
-    Rocket(float x, float y, float angle, boolean hot, BufferedImage img)
+    Rocket(float x, float y, float angle, BufferedImage img, Map<Point, Wall> wallIntel)
     {
         this.x = x;
         this.y = y;
         this.img = img;
         this.angle = angle;
-        this.hot = true;
+        this.wallIntel = wallIntel;
+        this.vx = (float) Math.cos(Math.toRadians(angle)) * R;
+        this.vy = (float) Math.sin(Math.toRadians(angle)) * R;
+
+        try
+        {
+            expimg = ImageIO.read(Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/explosion_sm.gif"), "Could not find explosion_sm.gif"));
+        }
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     void setX(float x){ this.x = x; }
@@ -39,51 +58,67 @@ public class Rocket
 
     float getY() { return y;}
 
-    void setHot(boolean hot)
+    boolean getDestroyed()
     {
-        this.hot = hot;
+        return isDestroyed;
     }
 
-    boolean getHot()
+    void update()
     {
-        return hot;
-    }
-
-    void update() {
-        this.x += R * Math.cos(Math.toRadians(angle));
-        this.y += R * Math.sin(Math.toRadians(angle));
-
-        if (x < 0 || x > GameConstants.GAME_SCREEN_WIDTH || y < 0 || y > GameConstants.GAME_SCREEN_HEIGHT)
+        if (!isDestroyed)
         {
-            this.hot = false;
+            moveForwards();
         }
-
-        //System.out.println(angle); // this is for debugging the collision
     }
 
+    private void moveForwards()
+    {
+        float newX = x + vx;
+        float newY = y + vy;
+
+        if (!checkCollision(newX, newY))
+        {
+            x = newX;
+            y = newY;
+            checkBorder();
+        }
+        else
+        {
+            isDestroyed = true;
+        }
+    }
 
     private void checkBorder()
     {
         if (x < 32) {
             x = 32;
+            isDestroyed = true;
         }
-        if (x >= GameConstants.GAME_SCREEN_WIDTH - 96) {
-            x = GameConstants.GAME_SCREEN_WIDTH - 96;
+        if (x >= GameConstants.GAME_SCREEN_WIDTH - 64) {
+            x = GameConstants.GAME_SCREEN_WIDTH - 64;
+            isDestroyed = true;
         }
         if (y < 32) {
             y = 32;
+            isDestroyed = true;
         }
-        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 120) {
-            y = GameConstants.GAME_SCREEN_HEIGHT - 120;
+        if (y >= GameConstants.GAME_SCREEN_HEIGHT - 88) {
+            y = GameConstants.GAME_SCREEN_HEIGHT - 88;
+            isDestroyed = true;
         }
     }
 
-    public boolean collidesWith(Tank tank) {
-        return tank.getBounds().intersects(this.getBounds());
-    }
-
-    public boolean collidesWith(Wall wall) {
-        return wall.getBounds().intersects(this.getBounds());
+    private boolean checkCollision(float x, float y)
+    {
+        Rectangle temp = new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
+        for(Wall wall : wallIntel.values())
+        {
+            if(wall.isBreakable() && wall.getBounds().intersects((getBounds())))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     Rectangle getBounds()
@@ -99,6 +134,20 @@ public class Rocket
 
     void drawImage(Graphics g)
     {
-        g.drawImage(img, (int) x, (int) y, null);
+        if (!isDestroyed)
+        {
+            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
+            rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(this.img, rotation, null);
+        }
+        if (isDestroyed)
+        {
+            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
+            rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(this.expimg, rotation, null);
+            isInert = true;
+        }
     }
 }

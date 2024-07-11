@@ -6,6 +6,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author ulicessgg
@@ -17,6 +19,7 @@ public class Tank{
     private double health;
 
     private Map<Point, Wall> wallIntel;
+    private List<Rocket> rockets = new ArrayList<>();
     private float x;
     private float y;
     private float vx;
@@ -32,8 +35,6 @@ public class Tank{
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
-    private boolean ShootPressed;
-    private boolean PowerPressed;
 
     Tank(int lives, double health, float x, float y, float vx, float vy, float angle, BufferedImage img, Map<Point, Wall> wallIntel)
     {
@@ -66,6 +67,26 @@ public class Tank{
         this.lives -= 1;
     }
 
+    double getHealth()
+    {
+        return this.health;
+    }
+
+    void loseHealth()
+    {
+        this.health -= 20;
+    }
+
+    void updateIntel(Map<Point, Wall> wallIntel)
+    {
+        this.wallIntel = wallIntel;
+    }
+
+    public List<Rocket> getRockets()
+    {
+        return rockets;
+    }
+
     void toggleUpPressed() {
         this.UpPressed = true;
     }
@@ -82,16 +103,6 @@ public class Tank{
         this.LeftPressed = true;
     }
 
-    void toggleShootPressed()
-    {
-        this.ShootPressed = true;
-    }
-
-    void togglePowerPressed()
-    {
-        this.PowerPressed = true;
-    }
-
     void unToggleUpPressed() {
         this.UpPressed = false;
     }
@@ -106,16 +117,6 @@ public class Tank{
 
     void unToggleLeftPressed() {
         this.LeftPressed = false;
-    }
-
-    void unToggleShootPressed()
-    {
-        this.ShootPressed = false;
-    }
-
-    void unTogglePowerPressed()
-    {
-        this.PowerPressed = false;
     }
 
     void update() {
@@ -135,7 +136,10 @@ public class Tank{
             this.rotateRight();
         }
 
-        //System.out.println(angle); // this is for debugging the collision
+        for (Rocket rocket : rockets)
+        {
+            rocket.update();
+        }
     }
 
     private void rotateLeft()
@@ -246,6 +250,15 @@ public class Tank{
         }
     }
 
+    public void fireRocket(BufferedImage rimg)
+    {
+        float offset = 24;
+        float rocketStartX = x + (float) Math.cos(Math.toRadians(angle)) * (img.getWidth() / 2 + offset);
+        float rocketStartY = y + (float) Math.sin(Math.toRadians(angle)) * (img.getHeight() / 2 + offset);
+        Rocket rocket = new Rocket(rocketStartX, rocketStartY, angle, rimg, wallIntel);
+        rockets.add(rocket);
+    }
+
     private void checkBorder()
     {
         if (x < 32) {
@@ -267,7 +280,7 @@ public class Tank{
         Rectangle temp = new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
         for(Wall wall : wallIntel.values())
         {
-            if(wall.isBreakable() && wall.getBounds().intersects((getBounds())))
+            if(wall.isBreakable() && !wall.isDestroyed() && wall.getBounds().intersects((getBounds())))
             {
                 return true;
             }
@@ -292,9 +305,10 @@ public class Tank{
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
-        g2d.setColor(Color.RED);
-        //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-        //g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
+        for (Rocket rocket : rockets)
+        {
+            rocket.drawImage(g2d);
+        }
     }
 }

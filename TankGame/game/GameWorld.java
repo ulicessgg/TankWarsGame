@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author ulicessgg
@@ -23,9 +25,6 @@ public class GameWorld extends JPanel implements Runnable {
     private Graphics2D buffer;
     private BufferedImage world;
     private BufferedImage background;
-    private BufferedImage player1;
-    private BufferedImage player2;
-    private BufferedImage miniMap;
     private Tank t1;
     private Tank t2;
     private Map<Point, Wall> walls = new HashMap<>();
@@ -143,13 +142,26 @@ public class GameWorld extends JPanel implements Runnable {
             ex.printStackTrace();
         }
 
+        BufferedImage rimg = null;
+        try
+        {
+            rimg = ImageIO.read(
+                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/Rocket.gif"),
+                            "Could not find Rocket.gif")
+            );
+        }
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+
         // creates both player tanks
         t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img, walls);
-        TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E, KeyEvent.VK_Q);
+        TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E);
         this.lf.getJf().addKeyListener(tc1);
 
         t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img, walls);
-        TankControl tc2 = new TankControl(t2, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
+        TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U);
         this.lf.getJf().addKeyListener(tc2);
     }
 
@@ -202,7 +214,7 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
         // creates the obstacle walls
-        for(int i = 6; i < 35; i++)
+        for(int i = 7; i < 34; i++)
         {
             if(i < 15 || i > 25)
             {
@@ -211,7 +223,7 @@ public class GameWorld extends JPanel implements Runnable {
             }
         }
 
-        for(int i = 4; i < 27; i++)
+        for(int i = 5; i < 26; i++)
         {
             if(i < 12 || i > 18)
             {
@@ -267,11 +279,6 @@ public class GameWorld extends JPanel implements Runnable {
         return winner;
     }
 
-    public void pickUpItem()
-    {
-
-    }
-
     @Override
     public void paintComponent(Graphics g)
     {
@@ -289,9 +296,5 @@ public class GameWorld extends JPanel implements Runnable {
         this.t2.drawImage(buffer);
 
         g2.drawImage(world, 0, 0, null);
-
-        //this.miniMap = world;
-
-        //g2.drawImage (miniMap, , , , , null);
     }
 }

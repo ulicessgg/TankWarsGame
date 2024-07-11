@@ -2,6 +2,7 @@ package TankGame.game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -9,22 +10,21 @@ import java.awt.event.KeyListener;
  */
 public class TankControl implements KeyListener {
     private final Tank t1;
+    private final BufferedImage rimg;
     private final int up;
     private final int down;
     private final int right;
     private final int left;
     private final int shoot;
-
-    private final int power;
     
-    public TankControl(Tank t1, int up, int down, int left, int right, int shoot, int power) {
+    public TankControl(Tank t1, BufferedImage rimg, int up, int down, int left, int right, int shoot) {
         this.t1 = t1;
+        this.rimg = rimg;
         this.up = up;
         this.down = down;
         this.right = right;
         this.left = left;
         this.shoot = shoot;
-        this.power = power;
     }
 
     @Override
@@ -50,11 +50,7 @@ public class TankControl implements KeyListener {
         }
         if (keyPressed == shoot)
         {
-            this.t1.toggleShootPressed();
-        }
-        if (keyPressed == power)
-        {
-            this.t1.togglePowerPressed();
+            this.t1.fireRocket(rimg);
         }
     }
 
@@ -72,14 +68,6 @@ public class TankControl implements KeyListener {
         }
         if (keyReleased  == right) {
             this.t1.unToggleRightPressed();
-        }
-        if (keyReleased == shoot)
-        {
-            this.t1.unToggleShootPressed();
-        }
-        if (keyReleased == power)
-        {
-            this.t1.unTogglePowerPressed();
         }
     }
 }
