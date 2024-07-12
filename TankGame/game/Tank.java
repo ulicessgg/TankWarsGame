@@ -49,6 +49,15 @@ public class Tank{
         this.wallIntel = wallIntel;
     }
 
+    Tank(int lives, double health, float x, float y, Map<Point, Wall> wallIntel)
+    {
+        this.lives = lives;
+        this.health = health;
+        this.x = x;
+        this.y = y;
+        this.wallIntel = wallIntel;
+    }
+
     void setX(float x){ this.x = x; }
 
     void setY(float y) { this. y = y;}

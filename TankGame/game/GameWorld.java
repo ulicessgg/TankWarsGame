@@ -28,7 +28,8 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage background;
     private Tank t1;
     private Tank t2;
-    private Map<Point, Wall> walls = new HashMap<>();
+    private Map<Point, Wall> barrierWalls = new HashMap<>();
+    private Map<Point, Wall> obstacleWalls = new HashMap<>();
     private final Launcher lf;
     private long tick = 0;
 
@@ -57,6 +58,7 @@ public class GameWorld extends JPanel implements Runnable {
                     String winner = getWinner();
                     System.out.println(winner);
                     SwingUtilities.invokeLater(() -> lf.setFrame("end"));
+                    resetGame();
                     break;
                 }
 
@@ -77,6 +79,12 @@ public class GameWorld extends JPanel implements Runnable {
      * Reset game to its initial state.
      */
     public void resetGame()
+    {
+        this.tick = 0;
+        InitializeGame();
+    }
+
+    public void resetPositions()
     {
         this.tick = 0;
         this.t1.setX(32);
@@ -159,11 +167,11 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
         // creates both player tanks
-        t1 = new Tank(3, 100.00, 32, 32, 0, 0, (short) 0, t1img, walls);
+        t1 = new Tank(3, 100.00, 32, 32, 0, 0, (short) 0, t1img, obstacleWalls);
         TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(3, 100.00, 1232, 912, 0, 0, (short) 180, t2img, walls);
+        t2 = new Tank(3, 100.00, 1232, 912, 0, 0, (short) 180, t2img, obstacleWalls);
         TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U);
         this.lf.getJf().addKeyListener(tc2);
     }
@@ -188,14 +196,14 @@ public class GameWorld extends JPanel implements Runnable {
         // creates the barrier walls
         for(int i = 0; i < 41; i++)
         {
-            walls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false, false));
-            walls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false, false));
+            barrierWalls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false, false));
+            barrierWalls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false, false));
 
         }
         for(int i = 1; i < 30; i++)
         {
-            walls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false, false));
-            walls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false, false));
+            barrierWalls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false, false));
+            barrierWalls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false, false));
         }
     }
 
@@ -221,8 +229,8 @@ public class GameWorld extends JPanel implements Runnable {
         {
             if(i < 15 || i > 25)
             {
-                walls.put(new Point(i, 384), new Wall(i * wall2Img.getWidth(), 384, wall2Img, true, false));
-                walls.put(new Point(i, 576), new Wall(i * wall2Img.getWidth(), 576, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 384), new Wall(i * wall2Img.getWidth(), 384, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 576), new Wall(i * wall2Img.getWidth(), 576, wall2Img, true, false));
             }
         }
 
@@ -230,8 +238,8 @@ public class GameWorld extends JPanel implements Runnable {
         {
             if(i < 12 || i > 18)
             {
-                walls.put(new Point(448, i), new Wall(448, i * wall2Img.getWidth(), wall2Img, true, false));
-                walls.put(new Point(832, i), new Wall(832, i * wall2Img.getWidth(), wall2Img, true, false));
+                obstacleWalls.put(new Point(448, i), new Wall(448, i * wall2Img.getWidth(), wall2Img, true, false));
+                obstacleWalls.put(new Point(832, i), new Wall(832, i * wall2Img.getWidth(), wall2Img, true, false));
             }
         }
     }
@@ -252,7 +260,7 @@ public class GameWorld extends JPanel implements Runnable {
             {
                 t1.loseLife();
                 t2.loseLife();
-                resetGame();
+                resetPositions();
             }
         }
     }
@@ -328,7 +336,12 @@ public class GameWorld extends JPanel implements Runnable {
 
         buffer.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 
-        for(Wall wall : walls.values())
+        for(Wall wall : barrierWalls.values())
+        {
+            wall.drawImage(buffer);
+        }
+
+        for(Wall wall : obstacleWalls.values())
         {
             wall.drawImage(buffer);
         }
