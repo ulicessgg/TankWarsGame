@@ -58,6 +58,11 @@ public class Rocket{
 
     float getY() { return y;}
 
+    void destroy(boolean isDestroyed)
+    {
+        this.isDestroyed = isDestroyed;
+    }
+
     boolean getDestroyed()
     {
         return isDestroyed;
@@ -141,6 +146,7 @@ public class Rocket{
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(this.img, rotation, null);
         }
+        /*
         if (isDestroyed)
         {
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
@@ -149,5 +155,6 @@ public class Rocket{
             g2d.drawImage(this.expimg, rotation, null);
             isInert = true;
         }
+        */
     }
 }

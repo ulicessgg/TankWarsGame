@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author ulicessgg
@@ -47,6 +48,8 @@ public class GameWorld extends JPanel implements Runnable {
                 this.t1.update();
                 this.t2.update(); // update tank
                 tankCollision();
+                rocketCollision();
+                checkHealth();
                 this.repaint();   // redraw game
 
                 if(gameOver())
@@ -156,11 +159,11 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
         // creates both player tanks
-        t1 = new Tank(3, 100, 32, 32, 0, 0, (short) 0, t1img, walls);
+        t1 = new Tank(3, 100.00, 32, 32, 0, 0, (short) 0, t1img, walls);
         TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(3, 100, 1232, 912, 0, 0, (short) 180, t2img, walls);
+        t2 = new Tank(3, 100.00, 1232, 912, 0, 0, (short) 180, t2img, walls);
         TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U);
         this.lf.getJf().addKeyListener(tc2);
     }
@@ -251,6 +254,44 @@ public class GameWorld extends JPanel implements Runnable {
                 t2.loseLife();
                 resetGame();
             }
+        }
+    }
+
+    public void rocketCollision()
+    {
+        Iterator<Rocket> iterator = t1.getRockets().iterator();
+        while (iterator.hasNext()) {
+            Rocket rocket = iterator.next();
+            if (rocket.getBounds().intersects(t2.getBounds())) {
+                t2.loseHealth();
+                iterator.remove();
+                System.out.println("tank2 damaged");
+            }
+        }
+        iterator = t2.getRockets().iterator();
+        while (iterator.hasNext()) {
+            Rocket rocket = iterator.next();
+            if (rocket.getBounds().intersects(t1.getBounds())) {
+                t1.loseHealth();
+                iterator.remove();
+                System.out.println("tank1 damaged");
+            }
+        }
+    }
+
+    public void checkHealth()
+    {
+        if(t1.getHealth() <= 0)
+        {
+            t1.loseLife();
+            t1.setHealth();
+            System.out.println("tank1 lost a life");
+        }
+        if(t2.getHealth() <= 0)
+        {
+            t2.loseLife();
+            t2.setHealth();
+            System.out.println("tank2 lost a life");
         }
     }
 

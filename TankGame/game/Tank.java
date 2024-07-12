@@ -64,7 +64,12 @@ public class Tank{
 
     void loseLife()
     {
-        this.lives -= 1;
+        this.lives = lives - 1;
+    }
+
+    void setHealth()
+    {
+        this.health = 100.0;
     }
 
     double getHealth()
@@ -74,10 +79,15 @@ public class Tank{
 
     void loseHealth()
     {
-        this.health -= 20;
+        this.health = health - 25.00;
     }
 
     void updateIntel(Map<Point, Wall> wallIntel)
+    {
+        this.wallIntel = wallIntel;
+    }
+
+    void updateRockets(Map<Point, Wall> wallIntel)
     {
         this.wallIntel = wallIntel;
     }
