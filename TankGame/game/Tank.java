@@ -17,9 +17,9 @@ public class Tank{
 
     private int lives;
     private double health;
-
     private Map<Point, Wall> wallIntel;
     private List<Rocket> rockets = new ArrayList<>();
+    private List<MuzzleFlash> flashes = new ArrayList<>();
     private float x;
     private float y;
     private float vx;
@@ -138,7 +138,8 @@ public class Tank{
         this.LeftPressed = false;
     }
 
-    void update() {
+    void update()
+    {
         if (this.UpPressed) {
             this.moveForwards();
         }
@@ -271,11 +272,13 @@ public class Tank{
 
     public void fireRocket(BufferedImage rimg)
     {
-        float offset = 24;
+        float offset = 16;
         float rocketStartX = x + (float) Math.cos(Math.toRadians(angle)) * (img.getWidth() / 2 + offset);
         float rocketStartY = y + (float) Math.sin(Math.toRadians(angle)) * (img.getHeight() / 2 + offset);
         Rocket rocket = new Rocket(rocketStartX, rocketStartY, angle, rimg, wallIntel);
         rockets.add(rocket);
+        MuzzleFlash round = new MuzzleFlash(rocketStartX, rocketStartY, angle);
+        flashes.add(round);
     }
 
     private void checkBorder()
@@ -296,7 +299,6 @@ public class Tank{
 
     private boolean checkCollision(float x, float y)
     {
-        Rectangle temp = new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
         for(Wall wall : wallIntel.values())
         {
             if(wall.isBreakable() && !wall.isDestroyed() && wall.getBounds().intersects((getBounds())))
@@ -325,9 +327,13 @@ public class Tank{
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
 
-        for (Rocket rocket : rockets)
+        for (MuzzleFlash flash : flashes)
         {
-            rocket.drawImage(g2d);
+            flash.drawImage(g2d);
+            for (Rocket rocket : rockets)
+            {
+                rocket.drawImage(g2d);
+            }
         }
     }
 }

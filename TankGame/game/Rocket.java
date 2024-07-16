@@ -42,7 +42,7 @@ public class Rocket{
 
         try
         {
-            expimg = ImageIO.read(Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/explosion_sm.gif"), "Could not find explosion_sm.gif"));
+            expimg = ImageIO.read(Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/Rocket.gif"), "Could not find explosion_sm.gif"));
         }
         catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -81,7 +81,7 @@ public class Rocket{
         float newX = x + vx;
         float newY = y + vy;
 
-        if (!checkCollision(newX, newY))
+        if (!checkCollision())
         {
             x = newX;
             y = newY;
@@ -113,12 +113,11 @@ public class Rocket{
         }
     }
 
-    private boolean checkCollision(float x, float y)
+    private boolean checkCollision()
     {
-        Rectangle temp = new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
         for(Wall wall : wallIntel.values())
         {
-            if(wall.isBreakable() && wall.getBounds().intersects((getBounds())))
+            if(wall.isBreakable() && !wall.isDestroyed() && wall.getBounds().intersects((getBounds())))
             {
                 return true;
             }
@@ -146,15 +145,5 @@ public class Rocket{
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(this.img, rotation, null);
         }
-        /*
-        if (isDestroyed)
-        {
-            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
-            rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(this.expimg, rotation, null);
-            isInert = true;
-        }
-        */
     }
 }

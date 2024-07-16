@@ -23,7 +23,6 @@ import java.util.Iterator;
  */
 public class GameWorld extends JPanel implements Runnable {
 
-    private Graphics2D buffer;
     private BufferedImage world;
     private BufferedImage background;
     private Tank t1;
@@ -126,10 +125,6 @@ public class GameWorld extends JPanel implements Runnable {
         BufferedImage t1img = null;
         try
         {
-            /*
-             * note class loaders read files from the out folder (build folder in Netbeans) and not the
-             * current working directory. When running a jar, class loaders will read from within the jar.
-             */
             t1img = ImageIO.read(
                     Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/tank1.png"),
                             "Could not find tank1.png")
@@ -268,21 +263,46 @@ public class GameWorld extends JPanel implements Runnable {
     public void rocketCollision()
     {
         Iterator<Rocket> iterator = t1.getRockets().iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             Rocket rocket = iterator.next();
-            if (rocket.getBounds().intersects(t2.getBounds())) {
+            if (rocket.getBounds().intersects(t2.getBounds()))
+            {
                 t2.loseHealth();
                 iterator.remove();
                 System.out.println("tank2 damaged");
             }
+
+            for(Wall wall : obstacleWalls.values())
+            {
+                if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                {
+                    wall.destroy(true);
+                    iterator.remove();
+                    break;
+                }
+            }
         }
+
         iterator = t2.getRockets().iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             Rocket rocket = iterator.next();
-            if (rocket.getBounds().intersects(t1.getBounds())) {
+            if (rocket.getBounds().intersects(t1.getBounds()))
+            {
                 t1.loseHealth();
                 iterator.remove();
                 System.out.println("tank1 damaged");
+            }
+
+            for(Wall wall : obstacleWalls.values())
+            {
+                if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                {
+                    wall.destroy(true);
+                    iterator.remove();
+                    break;
+                }
             }
         }
     }

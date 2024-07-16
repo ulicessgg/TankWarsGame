@@ -60,11 +60,11 @@ public class Wall {
 
     void drawImage(Graphics g)
     {
-        AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(this.img, rotation, null);
-        g2d.setColor(Color.RED);
-        //g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
-
+        if(!isDestroyed())
+        {
+            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(this.img, rotation, null);
+        }
     }
 }
