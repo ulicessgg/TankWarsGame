@@ -4,11 +4,14 @@ import TankGame.GameConstants;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Wall {
     private float x;
     private float y;
     private BufferedImage img;
+    private LargeExplosion c4;
     private boolean breakable;
     private boolean destroyed;
 
@@ -39,6 +42,10 @@ public class Wall {
     void destroy(boolean destroy)
     {
         this.destroyed = destroy;
+        if(destroy)
+        {
+            c4 = new LargeExplosion(this.x, this.y, 0);
+        }
     }
 
     boolean isDestroyed()
@@ -65,6 +72,12 @@ public class Wall {
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(this.img, rotation, null);
+        }
+        if(isDestroyed())
+        {
+            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
+            Graphics2D g2d = (Graphics2D) g;
+            c4.drawImage(g2d);
         }
     }
 }

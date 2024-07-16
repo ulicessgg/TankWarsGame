@@ -41,7 +41,7 @@ public class MuzzleFlash {
             ex.printStackTrace();
         }
 
-        Timer timer = new Timer(100, e ->
+        Timer timer = new Timer(15, e ->
         {
             frame++;
             if(frame >= img.size())
