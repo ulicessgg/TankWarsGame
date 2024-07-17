@@ -1,7 +1,5 @@
 package TankGame.game;
 
-import TankGame.GameConstants;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -53,36 +51,14 @@ public class MuzzleFlash {
         timer.start();
     }
 
-    void setX(float x)
-    {
-        this.x = x;
-    }
-
-    void setY(float y)
-    {
-        this. y = y;
-    }
-
-    void inert(boolean inert)
-    {
-        this.inert = inert;
-    }
-
     boolean isInert()
     {
         return inert;
     }
 
-    @Override
-    public String toString()
-    {
-        return "x=" + x + ", y=" + y + ", inert=" + inert;
-    }
-
-
     void drawImage(Graphics g)
     {
-        if(!inert)
+        if(!isInert())
         {
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             Graphics2D g2d = (Graphics2D) g;

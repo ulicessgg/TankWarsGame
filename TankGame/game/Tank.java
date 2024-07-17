@@ -1,11 +1,11 @@
 package TankGame.game;
 
 import TankGame.GameConstants;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -13,10 +13,13 @@ import java.util.ArrayList;
  * @author ulicessgg
  * using demo code provided by anthony-pc as base code
  */
-public class Tank{
+
+public class Tank
+{
 
     private int lives;
     private double health;
+    private BufferedImage img;
     private Map<Point, Wall> wallIntel;
     private List<Rocket> rockets = new ArrayList<>();
     private List<MuzzleFlash> flashes = new ArrayList<>();
@@ -26,11 +29,9 @@ public class Tank{
     private float y;
     private float vx;
     private float vy;
-    private int buffer = -480;
     private float angle;
     private float R = 3;
     private float ROTATIONSPEED = 1.50f;
-    private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
@@ -46,17 +47,8 @@ public class Tank{
         this.y = y;
         this.vx = vx;
         this.vy = vy;
-        this.img = img;
         this.angle = angle;
-        this.wallIntel = wallIntel;
-    }
-
-    Tank(int lives, double health, float x, float y, Map<Point, Wall> wallIntel)
-    {
-        this.lives = lives;
-        this.health = health;
-        this.x = x;
-        this.y = y;
+        this.img = img;
         this.wallIntel = wallIntel;
     }
 
@@ -68,14 +60,24 @@ public class Tank{
 
     float getY() { return y;}
 
-    int getLives()
+    Rectangle getBounds()
     {
-        return this.lives;
+        return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
     }
 
     void loseLife()
     {
         this.lives = lives - 1;
+    }
+
+    int getLives()
+    {
+        return this.lives;
+    }
+
+    void loseHealth()
+    {
+        this.health = health - 25.00;
     }
 
     void setHealth()
@@ -88,9 +90,9 @@ public class Tank{
         return this.health;
     }
 
-    void loseHealth()
+    public List<Rocket> getRockets()
     {
-        this.health = health - 25.00;
+        return rockets;
     }
 
     void impact(boolean madeImpact)
@@ -102,6 +104,11 @@ public class Tank{
         }
     }
 
+    boolean madeImpact()
+    {
+        return madeImpact;
+    }
+
     void destroy(boolean destroy)
     {
         this.isDestroyed = destroy;
@@ -111,19 +118,9 @@ public class Tank{
         }
     }
 
-    void updateIntel(Map<Point, Wall> wallIntel)
+    boolean isDestroyed()
     {
-        this.wallIntel = wallIntel;
-    }
-
-    void updateRockets(Map<Point, Wall> wallIntel)
-    {
-        this.wallIntel = wallIntel;
-    }
-
-    public List<Rocket> getRockets()
-    {
-        return rockets;
+        return isDestroyed;
     }
 
     void toggleUpPressed() {
@@ -202,50 +199,6 @@ public class Tank{
         }
     }
 
-    private void moveBackwards()
-    {
-        float tempX = x;
-        float tempY = y;
-
-        vx =  Math.round(R * Math.cos(Math.toRadians(angle)));
-        vy =  Math.round(R * Math.sin(Math.toRadians(angle)));
-        if(!checkCollision(x - vx, y - vy))
-        {
-            x -= vx;
-            y -= vy;
-            checkBorder();
-        }
-        else
-        {
-            if(angle <= 90 && angle >= 270)
-            {
-                x = tempX + 1;
-            }
-            if(angle <= 180 && angle >= 0)
-            {
-                y = tempY + 1;
-            }
-            if(angle <= 90 && angle >= 0)
-            {
-                x = tempX + 1;
-                y = tempY + 1;
-            }
-            if(angle <= 270 && angle >= 90)
-            {
-                x = tempX - 1;
-            }
-            if(angle <= 360 && angle >= 180)
-            {
-                y = tempY - 1;
-            }
-            if(angle <= 270 && angle >= 180)
-            {
-                x = tempX - 1;
-                y = tempY - 1;
-            }
-        }
-    }
-
     private void moveForwards()
     {
         float tempX = x;
@@ -290,6 +243,50 @@ public class Tank{
         }
     }
 
+    private void moveBackwards()
+    {
+        float tempX = x;
+        float tempY = y;
+
+        vx =  Math.round(R * Math.cos(Math.toRadians(angle)));
+        vy =  Math.round(R * Math.sin(Math.toRadians(angle)));
+        if(!checkCollision(x - vx, y - vy))
+        {
+            x -= vx;
+            y -= vy;
+            checkBorder();
+        }
+        else
+        {
+            if(angle <= 90 && angle >= 270)
+            {
+                x = tempX + 1;
+            }
+            if(angle <= 180 && angle >= 0)
+            {
+                y = tempY + 1;
+            }
+            if(angle <= 90 && angle >= 0)
+            {
+                x = tempX + 1;
+                y = tempY + 1;
+            }
+            if(angle <= 270 && angle >= 90)
+            {
+                x = tempX - 1;
+            }
+            if(angle <= 360 && angle >= 180)
+            {
+                y = tempY - 1;
+            }
+            if(angle <= 270 && angle >= 180)
+            {
+                x = tempX - 1;
+                y = tempY - 1;
+            }
+        }
+    }
+
     public void fireRocket(BufferedImage rimg)
     {
         float offset = 16;
@@ -299,6 +296,18 @@ public class Tank{
         rockets.add(rocket);
         MuzzleFlash round = new MuzzleFlash(rocketStartX, rocketStartY, angle);
         flashes.add(round);
+    }
+
+    private boolean checkCollision(float x, float y)
+    {
+        for(Wall wall : wallIntel.values())
+        {
+            if(wall.isBreakable() && !wall.isDestroyed() && wall.getBounds().intersects((getBounds())))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void checkBorder()
@@ -317,36 +326,13 @@ public class Tank{
         }
     }
 
-    private boolean checkCollision(float x, float y)
-    {
-        for(Wall wall : wallIntel.values())
-        {
-            if(wall.isBreakable() && !wall.isDestroyed() && wall.getBounds().intersects((getBounds())))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    Rectangle getBounds()
-    {
-        return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
-    }
-
-    @Override
-    public String toString() {
-        return "x=" + x + ", y=" + y + ", angle=" + angle;
-    }
-
-
     void drawImage(Graphics g)
     {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
 
-        if(!madeImpact || !isDestroyed)
+        if(!madeImpact() || !isDestroyed())
         {
             g2d.drawImage(this.img, rotation, null);
 
@@ -358,7 +344,7 @@ public class Tank{
             }
         }
 
-        if(madeImpact)
+        if(madeImpact())
         {
             g2d.drawImage(this.img, rotation, null);
 
@@ -372,7 +358,7 @@ public class Tank{
             thermite.drawImage(g2d);
         }
 
-        if(isDestroyed)
+        if(isDestroyed())
         {
             c4.drawImage(g2d);
         }

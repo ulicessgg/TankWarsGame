@@ -24,14 +24,9 @@ public class Wall {
         this.destroyed = destroyed;
     }
 
-    void setX(float x)
+    Rectangle getBounds()
     {
-        this.x = x;
-    }
-
-    void setY(float y)
-    {
-        this. y = y;
+        return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
     }
 
     boolean isBreakable()
@@ -53,18 +48,6 @@ public class Wall {
         return destroyed;
     }
 
-    Rectangle getBounds()
-    {
-        return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
-    }
-
-    @Override
-    public String toString()
-    {
-        return "x=" + x + ", y=" + y + ", breakable=" + breakable;
-    }
-
-
     void drawImage(Graphics g)
     {
         if(!isDestroyed())
@@ -75,6 +58,10 @@ public class Wall {
         }
         if(isDestroyed())
         {
+            if(c4 == null)
+            {
+                c4 = new LargeExplosion(this.x, this.y, 0);
+            }
             Graphics2D g2d = (Graphics2D) g;
             c4.drawImage(g2d);
         }

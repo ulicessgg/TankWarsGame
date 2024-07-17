@@ -30,7 +30,6 @@ public class GameWorld extends JPanel implements Runnable {
     private Map<Point, Wall> barrierWalls = new HashMap<>();
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
     private final Launcher lf;
-    private long tick = 0;
 
     /**
      *
@@ -44,7 +43,6 @@ public class GameWorld extends JPanel implements Runnable {
         try {
             while (true)
             {
-                this.tick++;
                 this.t1.update();
                 this.t2.update(); // update tank
                 tankCollision();
@@ -79,13 +77,11 @@ public class GameWorld extends JPanel implements Runnable {
      */
     public void resetGame()
     {
-        this.tick = 0;
         InitializeGame();
     }
 
     public void resetPositions()
     {
-        this.tick = 0;
         this.t1.setX(32);
         this.t1.setY(32);
         this.t2.setX(1232);

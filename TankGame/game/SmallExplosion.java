@@ -1,7 +1,5 @@
 package TankGame.game;
 
-import TankGame.GameConstants;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -41,7 +39,7 @@ public class SmallExplosion {
             ex.printStackTrace();
         }
 
-        Timer timer = new Timer(120, e ->
+        Timer timer = new Timer(90, e ->
         {
             frame++;
             if(frame >= img.size())
@@ -52,37 +50,14 @@ public class SmallExplosion {
         timer.setRepeats(true);
         timer.start();
     }
-
-    void setX(float x)
-    {
-        this.x = x;
-    }
-
-    void setY(float y)
-    {
-        this. y = y;
-    }
-
-    void inert(boolean inert)
-    {
-        this.inert = inert;
-    }
-
     boolean isInert()
     {
         return inert;
     }
 
-    @Override
-    public String toString()
-    {
-        return "x=" + x + ", y=" + y + ", inert=" + inert;
-    }
-
-
     void drawImage(Graphics g)
     {
-        if(!inert)
+        if(!isInert())
         {
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             Graphics2D g2d = (Graphics2D) g;
