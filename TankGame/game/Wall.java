@@ -75,7 +75,6 @@ public class Wall {
         }
         if(isDestroyed())
         {
-            AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             Graphics2D g2d = (Graphics2D) g;
             c4.drawImage(g2d);
         }

@@ -269,6 +269,7 @@ public class GameWorld extends JPanel implements Runnable {
             if (rocket.getBounds().intersects(t2.getBounds()))
             {
                 t2.loseHealth();
+                t2.impact(true);
                 iterator.remove();
                 System.out.println("tank2 damaged");
             }
@@ -291,6 +292,7 @@ public class GameWorld extends JPanel implements Runnable {
             if (rocket.getBounds().intersects(t1.getBounds()))
             {
                 t1.loseHealth();
+                t1.impact(true);
                 iterator.remove();
                 System.out.println("tank1 damaged");
             }
@@ -313,13 +315,17 @@ public class GameWorld extends JPanel implements Runnable {
         {
             t1.loseLife();
             t1.setHealth();
+            t1.destroy(true);
             System.out.println("tank1 lost a life");
+            resetPositions();
         }
         if(t2.getHealth() <= 0)
         {
             t2.loseLife();
             t2.setHealth();
+            t2.destroy(true);
             System.out.println("tank2 lost a life");
+            resetPositions();
         }
     }
 

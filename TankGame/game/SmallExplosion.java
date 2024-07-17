@@ -41,7 +41,7 @@ public class SmallExplosion {
             ex.printStackTrace();
         }
 
-        Timer timer = new Timer(150, e ->
+        Timer timer = new Timer(120, e ->
         {
             frame++;
             if(frame >= img.size())

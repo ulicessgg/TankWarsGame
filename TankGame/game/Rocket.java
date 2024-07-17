@@ -19,16 +19,13 @@ public class Rocket{
     private Map<Point, Wall> wallIntel;
     private float x;
     private float y;
-
     private float vx;
     private float vy;
     private float angle;
-
     private float R = 6;
     private BufferedImage img;
-    private BufferedImage expimg;
+    private SmallExplosion thermite;
     private boolean isDestroyed = false;
-    private boolean isInert = false;
 
     Rocket(float x, float y, float angle, BufferedImage img, Map<Point, Wall> wallIntel)
     {
@@ -39,15 +36,6 @@ public class Rocket{
         this.wallIntel = wallIntel;
         this.vx = (float) Math.cos(Math.toRadians(angle)) * R;
         this.vy = (float) Math.sin(Math.toRadians(angle)) * R;
-
-        try
-        {
-            expimg = ImageIO.read(Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/Rocket.gif"), "Could not find explosion_sm.gif"));
-        }
-        catch (IOException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
     }
 
     void setX(float x){ this.x = x; }
@@ -58,9 +46,13 @@ public class Rocket{
 
     float getY() { return y;}
 
-    void destroy(boolean isDestroyed)
+    void destroy(boolean destroy)
     {
-        this.isDestroyed = isDestroyed;
+        this.isDestroyed = destroy;
+        if(destroy)
+        {
+            thermite = new SmallExplosion(this.x, this.y, 0);
+        }
     }
 
     boolean getDestroyed()
@@ -89,7 +81,7 @@ public class Rocket{
         }
         else
         {
-            isDestroyed = true;
+            destroy(true);
         }
     }
 
@@ -97,19 +89,19 @@ public class Rocket{
     {
         if (x < 32) {
             x = 32;
-            isDestroyed = true;
+            destroy(true);
         }
         if (x >= GameConstants.GAME_SCREEN_WIDTH - 64) {
             x = GameConstants.GAME_SCREEN_WIDTH - 64;
-            isDestroyed = true;
+            destroy(true);
         }
         if (y < 32) {
             y = 32;
-            isDestroyed = true;
+            destroy(true);
         }
         if (y >= GameConstants.GAME_SCREEN_HEIGHT - 88) {
             y = GameConstants.GAME_SCREEN_HEIGHT - 88;
-            isDestroyed = true;
+            destroy(true);
         }
     }
 
@@ -138,12 +130,17 @@ public class Rocket{
 
     void drawImage(Graphics g)
     {
-        if (!isDestroyed)
+        if(!isDestroyed)
         {
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(this.img, rotation, null);
+        }
+        if(isDestroyed)
+        {
+            Graphics2D g2d = (Graphics2D) g;
+            thermite.drawImage(g2d);
         }
     }
 }

@@ -20,21 +20,23 @@ public class Tank{
     private Map<Point, Wall> wallIntel;
     private List<Rocket> rockets = new ArrayList<>();
     private List<MuzzleFlash> flashes = new ArrayList<>();
+    private SmallExplosion thermite;
+    private LargeExplosion c4;
     private float x;
     private float y;
     private float vx;
     private float vy;
     private int buffer = -480;
     private float angle;
-
     private float R = 3;
     private float ROTATIONSPEED = 1.50f;
-
     private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
+    private boolean madeImpact;
+    private boolean isDestroyed;
 
     Tank(int lives, double health, float x, float y, float vx, float vy, float angle, BufferedImage img, Map<Point, Wall> wallIntel)
     {
@@ -89,6 +91,24 @@ public class Tank{
     void loseHealth()
     {
         this.health = health - 25.00;
+    }
+
+    void impact(boolean madeImpact)
+    {
+        this.madeImpact = madeImpact;
+        if(madeImpact)
+        {
+            thermite = new SmallExplosion(this.x, this.y, this.angle);
+        }
+    }
+
+    void destroy(boolean destroy)
+    {
+        this.isDestroyed = destroy;
+        if(destroy)
+        {
+            c4 = new LargeExplosion(this.x, this.y, this.angle);
+        }
     }
 
     void updateIntel(Map<Point, Wall> wallIntel)
@@ -325,15 +345,36 @@ public class Tank{
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(this.img, rotation, null);
 
-        for (MuzzleFlash flash : flashes)
+        if(!madeImpact || !isDestroyed)
         {
-            flash.drawImage(g2d);
-            for (Rocket rocket : rockets)
-            {
-                rocket.drawImage(g2d);
+            g2d.drawImage(this.img, rotation, null);
+
+            for (MuzzleFlash flash : flashes) {
+                flash.drawImage(g2d);
+                for (Rocket rocket : rockets) {
+                    rocket.drawImage(g2d);
+                }
             }
+        }
+
+        if(madeImpact)
+        {
+            g2d.drawImage(this.img, rotation, null);
+
+            for (MuzzleFlash flash : flashes) {
+                flash.drawImage(g2d);
+                for (Rocket rocket : rockets) {
+                    rocket.drawImage(g2d);
+                }
+            }
+
+            thermite.drawImage(g2d);
+        }
+
+        if(isDestroyed)
+        {
+            c4.drawImage(g2d);
         }
     }
 }
