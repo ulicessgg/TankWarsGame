@@ -13,14 +13,13 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  * @author ulicessgg
  * using demo code provided by anthony-pc as base code
  */
+
 public class GameWorld extends JPanel implements Runnable {
 
     private BufferedImage world;
@@ -31,9 +30,6 @@ public class GameWorld extends JPanel implements Runnable {
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
     private final Launcher lf;
 
-    /**
-     *
-     */
     public GameWorld(Launcher lf) {
         this.lf = lf;
     }
@@ -70,22 +66,6 @@ public class GameWorld extends JPanel implements Runnable {
         {
             System.out.println(ignored);
         }
-    }
-
-    /**
-     * Reset game to its initial state.
-     */
-    public void resetGame()
-    {
-        InitializeGame();
-    }
-
-    public void resetPositions()
-    {
-        this.t1.setX(32);
-        this.t1.setY(32);
-        this.t2.setX(1232);
-        this.t2.setY(912);
     }
 
     /**
@@ -241,6 +221,22 @@ public class GameWorld extends JPanel implements Runnable {
         loadTanks();
         loadUnbreakableWalls();
         loadBreakableWalls();
+    }
+
+    /**
+     * Reset game to its initial state.
+     */
+    public void resetGame()
+    {
+        InitializeGame();
+    }
+
+    public void resetPositions()
+    {
+        this.t1.setX(32);
+        this.t1.setY(32);
+        this.t2.setX(1232);
+        this.t2.setY(912);
     }
 
     public void tankCollision()
