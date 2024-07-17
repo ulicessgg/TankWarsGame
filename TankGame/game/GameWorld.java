@@ -20,7 +20,8 @@ import java.util.Iterator;
  * using demo code provided by anthony-pc as base code
  */
 
-public class GameWorld extends JPanel implements Runnable {
+public class GameWorld extends JPanel implements Runnable
+{
 
     private BufferedImage world;
     private BufferedImage background;
@@ -28,6 +29,7 @@ public class GameWorld extends JPanel implements Runnable {
     private Tank t2;
     private Map<Point, Wall> barrierWalls = new HashMap<>();
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
+    private Audio music;
     private final Launcher lf;
 
     public GameWorld(Launcher lf) {
@@ -221,6 +223,8 @@ public class GameWorld extends JPanel implements Runnable {
         loadTanks();
         loadUnbreakableWalls();
         loadBreakableWalls();
+        music = new Audio("music");
+        music.loopAudio();
     }
 
     /**
@@ -228,6 +232,7 @@ public class GameWorld extends JPanel implements Runnable {
      */
     public void resetGame()
     {
+        music.stopAudio();
         InitializeGame();
     }
 
@@ -258,21 +263,28 @@ public class GameWorld extends JPanel implements Runnable {
         while (iterator.hasNext())
         {
             Rocket rocket = iterator.next();
+            boolean removed = false;
+
             if (rocket.getBounds().intersects(t2.getBounds()))
             {
                 t2.loseHealth();
                 t2.impact(true);
                 iterator.remove();
+                removed = true;
                 System.out.println("tank2 damaged");
             }
 
-            for(Wall wall : obstacleWalls.values())
+            if(!removed)
             {
-                if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                for(Wall wall : obstacleWalls.values())
                 {
-                    wall.destroy(true);
-                    iterator.remove();
-                    break;
+                    if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                    {
+                        wall.destroy(true);
+                        iterator.remove();
+                        removed = true;
+                        break;
+                    }
                 }
             }
         }
@@ -281,21 +293,28 @@ public class GameWorld extends JPanel implements Runnable {
         while (iterator.hasNext())
         {
             Rocket rocket = iterator.next();
+            boolean removed = false;
+
             if (rocket.getBounds().intersects(t1.getBounds()))
             {
                 t1.loseHealth();
                 t1.impact(true);
                 iterator.remove();
+                removed = true;
                 System.out.println("tank1 damaged");
             }
 
-            for(Wall wall : obstacleWalls.values())
+            if(!removed)
             {
-                if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                for(Wall wall : obstacleWalls.values())
                 {
-                    wall.destroy(true);
-                    iterator.remove();
-                    break;
+                    if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
+                    {
+                        wall.destroy(true);
+                        iterator.remove();
+                        removed = true;
+                        break;
+                    }
                 }
             }
         }

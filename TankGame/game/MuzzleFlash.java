@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class MuzzleFlash {
+public class MuzzleFlash
+{
     private float x;
     private float y;
     private float angle;
     private List<BufferedImage> img;
+    private Audio muzzle;
     private boolean inert = false;
     private int frame = 0;
 
@@ -38,6 +40,9 @@ public class MuzzleFlash {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
+
+        muzzle = new Audio("muzzle");
+        muzzle.playAudio();
 
         Timer timer = new Timer(15, e ->
         {

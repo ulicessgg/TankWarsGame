@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Wall {
+public class Wall
+{
     private float x;
     private float y;
     private BufferedImage img;

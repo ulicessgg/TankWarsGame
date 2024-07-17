@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class SmallExplosion {
+public class SmallExplosion
+{
     private float x;
     private float y;
     private float angle;
     private List<BufferedImage> img;
+    private Audio explosion;
     private boolean inert = false;
     private int frame = 0;
 
@@ -39,12 +41,16 @@ public class SmallExplosion {
             ex.printStackTrace();
         }
 
+        explosion = new Audio("small");
+        explosion.playAudio();
+
         Timer timer = new Timer(90, e ->
         {
             frame++;
             if(frame >= img.size())
             {
                 inert = true;
+                explosion.stopAudio();
             }
         });
         timer.setRepeats(true);
