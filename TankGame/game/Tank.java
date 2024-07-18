@@ -19,6 +19,7 @@ public class Tank
 
     private int lives;
     private double health;
+    private double maxHealth;
     private BufferedImage img;
     private Map<Point, Wall> wallIntel;
     private List<Rocket> rockets = new ArrayList<>();
@@ -43,6 +44,7 @@ public class Tank
     {
         this.lives = lives;
         this.health = health;
+        this.maxHealth = health;
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -77,7 +79,7 @@ public class Tank
 
     void loseHealth()
     {
-        this.health = health - 25.00;
+        this.health = health - 16.67;
     }
 
     void setHealth()
@@ -336,6 +338,18 @@ public class Tank
         {
             g2d.drawImage(this.img, rotation, null);
 
+            for (int i = 0; i < lives; i++)
+            {
+                g2d.drawImage(img, (int) (x - 6) + ((i * 20) + 3), (int) y - 48, 16, 16, null);
+            }
+
+            g2d.setColor(Color.RED);
+            g2d.fillRect((int) x - 6, (int) y - 24, 60, 6);
+
+            int currentHealthWidth = (int) ((double) health / maxHealth * 60);
+            g2d.setColor(Color.GREEN);
+            g2d.fillRect((int) x - 6, (int) y - 24, currentHealthWidth, 6);
+
             for (MuzzleFlash flash : flashes) {
                 flash.drawImage(g2d);
                 for (Rocket rocket : rockets) {
@@ -347,6 +361,18 @@ public class Tank
         if(madeImpact())
         {
             g2d.drawImage(this.img, rotation, null);
+
+            for (int i = 0; i < lives; i++)
+            {
+                g2d.drawImage(img, (int) (x - 6) + ((i * 16) + 4), (int) y - 48, 16, 16, null);
+            }
+
+            g2d.setColor(Color.RED);
+            g2d.fillRect((int) x - 6, (int) y - 24, 60, 6);
+
+            int currentHealthWidth = (int) ((double) health / maxHealth * 60);
+            g2d.setColor(Color.GREEN);
+            g2d.fillRect((int) x - 6, (int) y - 24, currentHealthWidth, 6);
 
             for (MuzzleFlash flash : flashes) {
                 flash.drawImage(g2d);
