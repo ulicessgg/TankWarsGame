@@ -167,16 +167,16 @@ public class GameWorld extends JPanel implements Runnable
         }
 
         // creates the barrier walls
-        for(int i = 0; i < 41; i++)
+        for(int i = 0; i < 59; i++)
         {
             barrierWalls.put(new Point(i, 0), new Wall(i * wall1Img.getWidth(), 0, wall1Img, false, false));
-            barrierWalls.put(new Point(i, 960), new Wall(i * wall1Img.getWidth(), 960, wall1Img, false, false));
+            barrierWalls.put(new Point(i, 992), new Wall(i * wall1Img.getWidth(), 992, wall1Img, false, false));
 
         }
-        for(int i = 1; i < 30; i++)
+        for(int i = 1; i < 31; i++)
         {
             barrierWalls.put(new Point(0, i), new Wall(0, i * wall1Img.getWidth(), wall1Img, false, false));
-            barrierWalls.put(new Point(1280, i), new Wall(1280, i * wall1Img.getWidth(), wall1Img, false, false));
+            barrierWalls.put(new Point(1856, i), new Wall(1856, i * wall1Img.getWidth(), wall1Img, false, false));
         }
     }
 
@@ -198,21 +198,12 @@ public class GameWorld extends JPanel implements Runnable
         }
 
         // creates the obstacle walls
-        for(int i = 7; i < 34; i++)
+        for(int i = 7; i < 52; i++)
         {
-            if(i < 15 || i > 25)
+            if(i < 15 || i > 22)
             {
                 obstacleWalls.put(new Point(i, 384), new Wall(i * wall2Img.getWidth(), 384, wall2Img, true, false));
                 obstacleWalls.put(new Point(i, 576), new Wall(i * wall2Img.getWidth(), 576, wall2Img, true, false));
-            }
-        }
-
-        for(int i = 5; i < 26; i++)
-        {
-            if(i < 12 || i > 18)
-            {
-                obstacleWalls.put(new Point(448, i), new Wall(448, i * wall2Img.getWidth(), wall2Img, true, false));
-                obstacleWalls.put(new Point(832, i), new Wall(832, i * wall2Img.getWidth(), wall2Img, true, false));
             }
         }
     }
