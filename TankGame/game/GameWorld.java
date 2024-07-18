@@ -22,7 +22,8 @@ import java.util.Iterator;
 
 public class GameWorld extends JPanel implements Runnable
 {
-
+    private int windowWidth = GameConstants.SCREEN_WIDTH / 2;
+    private int windowHeight = GameConstants.SCREEN_HEIGHT;
     private BufferedImage world;
     private BufferedImage background;
     private Tank t1;
@@ -30,6 +31,8 @@ public class GameWorld extends JPanel implements Runnable
     private Map<Point, Wall> barrierWalls = new HashMap<>();
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
     private Audio music;
+    private int miniMapWidth = GameConstants.GAME_SCREEN_WIDTH / 8;
+    private int miniMapHeight = GameConstants.GAME_SCREEN_HEIGHT / 8;
     private final Launcher lf;
 
     public GameWorld(Launcher lf) {
@@ -140,11 +143,11 @@ public class GameWorld extends JPanel implements Runnable
         }
 
         // creates both player tanks
-        t1 = new Tank(3, 100.00, 32, 32, 0, 0, (short) 0, t1img, obstacleWalls);
+        t1 = new Tank(3, 100.00, 48, 88, 0, 0, (short) 0, t1img, obstacleWalls);
         TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(3, 100.00, 1232, 912, 0, 0, (short) 180, t2img, obstacleWalls);
+        t2 = new Tank(3, 100.00, 1792, 928, 0, 0, (short) 180, t2img, obstacleWalls);
         TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U);
         this.lf.getJf().addKeyListener(tc2);
     }
@@ -198,12 +201,70 @@ public class GameWorld extends JPanel implements Runnable
         }
 
         // creates the obstacle walls
-        for(int i = 7; i < 52; i++)
+        for(int i = 1; i < 58; i++)
         {
-            if(i < 15 || i > 22)
+            if(i > 3 && i < 14)
             {
-                obstacleWalls.put(new Point(i, 384), new Wall(i * wall2Img.getWidth(), 384, wall2Img, true, false));
-                obstacleWalls.put(new Point(i, 576), new Wall(i * wall2Img.getWidth(), 576, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 208), new Wall(i * wall2Img.getWidth(), 208, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 400), new Wall(i * wall2Img.getWidth(), 400, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 592), new Wall(i * wall2Img.getWidth(), 592, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 784), new Wall(i * wall2Img.getWidth(), 784, wall2Img, true, false));
+            }
+            if(i > 19 && i < 27)
+            {
+                obstacleWalls.put(new Point(i, 208), new Wall(i * wall2Img.getWidth(), 208, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 400), new Wall(i * wall2Img.getWidth(), 400, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 592), new Wall(i * wall2Img.getWidth(), 592, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 784), new Wall(i * wall2Img.getWidth(), 784, wall2Img, true, false));
+            }
+            if(i > 31 && i < 39)
+            {
+                obstacleWalls.put(new Point(i, 208), new Wall(i * wall2Img.getWidth(), 208, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 400), new Wall(i * wall2Img.getWidth(), 400, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 592), new Wall(i * wall2Img.getWidth(), 592, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 784), new Wall(i * wall2Img.getWidth(), 784, wall2Img, true, false));
+            }
+            if(i > 44 && i < 55)
+            {
+                obstacleWalls.put(new Point(i, 208), new Wall(i * wall2Img.getWidth(), 208, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 400), new Wall(i * wall2Img.getWidth(), 400, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 592), new Wall(i * wall2Img.getWidth(), 592, wall2Img, true, false));
+                obstacleWalls.put(new Point(i, 784), new Wall(i * wall2Img.getWidth(), 784, wall2Img, true, false));
+            }
+        }
+        for(int i = 1; i < 31; i++)
+        {
+            if(i < 7)
+            {
+                obstacleWalls.put(new Point(608, i), new Wall(608, (i * wall2Img.getWidth()), wall2Img, true, false));
+                obstacleWalls.put(new Point(1248, i), new Wall(1248, (i * wall2Img.getWidth()), wall2Img, true, false));
+            }
+            if(i > 6 && i <12)
+            {
+                obstacleWalls.put(new Point(160, i), new Wall(160, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(448, i), new Wall(448, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(1408, i), new Wall(1408, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(1696, i), new Wall(1696, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+            }
+
+            if(i > 12 && i < 18)
+            {
+                obstacleWalls.put(new Point(608, i), new Wall(608, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(1248, i), new Wall(1248, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+            }
+
+            if(i > 18 && i < 24)
+            {
+                obstacleWalls.put(new Point(160, i), new Wall(160, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(448, i), new Wall(448, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(1408, i), new Wall(1408, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+                obstacleWalls.put(new Point(1696, i), new Wall(1696, (i * wall2Img.getWidth()) + 16, wall2Img, true, false));
+            }
+
+            if(i > 24)
+            {
+                obstacleWalls.put(new Point(608, i), new Wall(608, (i * wall2Img.getWidth()), wall2Img, true, false));
+                obstacleWalls.put(new Point(1248, i), new Wall(1248, (i * wall2Img.getWidth()), wall2Img, true, false));
             }
         }
     }
@@ -229,10 +290,10 @@ public class GameWorld extends JPanel implements Runnable
 
     public void resetPositions()
     {
-        this.t1.setX(32);
-        this.t1.setY(32);
-        this.t2.setX(1232);
-        this.t2.setY(912);
+        this.t1.setX(48);
+        this.t1.setY(88);
+        this.t2.setX(1792);
+        this.t2.setY(928);
     }
 
     public void tankCollision()
@@ -356,13 +417,29 @@ public class GameWorld extends JPanel implements Runnable
         return winner;
     }
 
+    public int getCamX(int x)
+    {
+        int offset = windowWidth / 2;
+        int tCamX = Math.max(0, Math.min(x - offset, GameConstants.GAME_SCREEN_WIDTH - windowWidth));
+
+        return tCamX;
+    }
+
+    public int getCamY(int y)
+    {
+        int offset = windowHeight / 2;
+        int tCamY = Math.max(0, Math.min(y - offset, GameConstants.GAME_SCREEN_HEIGHT - windowHeight));
+
+        return tCamY;
+    }
+
     @Override
     public void paintComponent(Graphics g)
     {
         Graphics2D g2 = (Graphics2D) g;
         Graphics2D buffer = world.createGraphics();
 
-        buffer.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        buffer.drawImage(background, 0, 0, GameConstants.GAME_SCREEN_WIDTH, GameConstants.GAME_SCREEN_HEIGHT, null);
 
         for(Wall wall : barrierWalls.values())
         {
@@ -374,9 +451,18 @@ public class GameWorld extends JPanel implements Runnable
             wall.drawImage(buffer);
         }
 
-        this.t1.drawImage(buffer);
-        this.t2.drawImage(buffer);
+        t1.drawImage(buffer);
+        t2.drawImage(buffer);
 
-        g2.drawImage(world, 0, 0, null);
+        g2.drawImage(world.getSubimage(getCamX((int) t1.getX()), getCamY((int) t1.getY()), windowWidth, windowHeight), 0, 0, windowWidth, windowHeight, null);
+        g2.drawImage(world.getSubimage(getCamX((int) t2.getX()), getCamY((int) t2.getY()), windowWidth, windowHeight), windowWidth, 0, windowWidth, windowHeight, null);
+
+        g2.setColor(Color.BLACK);
+        g2.fillRect(windowWidth - 4, 0, 8, windowHeight);
+
+        g2.setColor(Color.BLACK);
+        g2.fillRect(517, 393, miniMapWidth + 8, miniMapHeight + 8);
+
+        g2.drawImage(world, 521, 397, miniMapWidth, miniMapHeight, null);
     }
 }
