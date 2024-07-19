@@ -11,5 +11,17 @@ public class GameConstants {
     public static final int START_MENU_SCREEN_HEIGHT = 564;
 
     public static final int END_MENU_SCREEN_WIDTH = 516;
-    public static final int END_MENU_SCREEN_HEIGHT = 564;
+    public static final int END_MENU_SCREEN_HEIGHT = 664;
+
+    public static String winner;
+
+    public static void setWinner(String winner)
+    {
+        GameConstants.winner = winner;
+    }
+
+    public static String getWinner()
+    {
+        return winner;
+    }
 }

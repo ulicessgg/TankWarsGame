@@ -26,6 +26,9 @@ public class Audio
             case "large":
                 path = "TankGame/resources/Explosion_large.wav";
                 break;
+            case "power":
+                path = "TankGame/resources/PoweredUp.wav";
+                break;
             default:
                 break;
         }

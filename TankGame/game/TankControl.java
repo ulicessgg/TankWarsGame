@@ -16,8 +16,9 @@ public class TankControl implements KeyListener {
     private final int right;
     private final int left;
     private final int shoot;
+    private final int altShoot;
     
-    public TankControl(Tank t1, BufferedImage rimg, int up, int down, int left, int right, int shoot) {
+    public TankControl(Tank t1, BufferedImage rimg, int up, int down, int left, int right, int shoot, int altShoot) {
         this.t1 = t1;
         this.rimg = rimg;
         this.up = up;
@@ -25,6 +26,7 @@ public class TankControl implements KeyListener {
         this.right = right;
         this.left = left;
         this.shoot = shoot;
+        this.altShoot = altShoot;
     }
 
     @Override
@@ -49,6 +51,10 @@ public class TankControl implements KeyListener {
             this.t1.toggleRightPressed();
         }
         if (keyPressed == shoot)
+        {
+            this.t1.fireRocket(rimg);
+        }
+        if (keyPressed == altShoot)
         {
             this.t1.fireRocket(rimg);
         }

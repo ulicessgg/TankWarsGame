@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author ulicessgg
@@ -30,6 +31,7 @@ public class GameWorld extends JPanel implements Runnable
     private Tank t2;
     private Map<Point, Wall> barrierWalls = new HashMap<>();
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
+    private Map<Point, PickUp> powerUps = new HashMap<>();
     private Audio music;
     private int miniMapWidth = GameConstants.GAME_SCREEN_WIDTH / 8;
     private int miniMapHeight = GameConstants.GAME_SCREEN_HEIGHT / 8;
@@ -40,12 +42,15 @@ public class GameWorld extends JPanel implements Runnable
     }
 
     @Override
-    public void run() {
-        try {
+    public void run()
+    {
+        try
+        {
             while (true)
             {
                 this.t1.update();
                 this.t2.update(); // update tank
+                pickUpCollision();
                 tankCollision();
                 rocketCollision();
                 checkHealth();
@@ -144,11 +149,11 @@ public class GameWorld extends JPanel implements Runnable
 
         // creates both player tanks
         t1 = new Tank(3, 100.00, 48, 88, 0, 0, (short) 0, t1img, obstacleWalls);
-        TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_E);
+        TankControl tc1 = new TankControl(t1, rimg, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_Q, KeyEvent.VK_E);
         this.lf.getJf().addKeyListener(tc1);
 
         t2 = new Tank(3, 100.00, 1792, 928, 0, 0, (short) 180, t2img, obstacleWalls);
-        TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U);
+        TankControl tc2 = new TankControl(t2, rimg, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_U, KeyEvent.VK_O);
         this.lf.getJf().addKeyListener(tc2);
     }
 
@@ -269,12 +274,21 @@ public class GameWorld extends JPanel implements Runnable
         }
     }
 
+    public void loadPowerUps()
+    {
+        powerUps.put(new Point(288, 288), new PickUp(288, 288, false, "life"));
+        powerUps.put(new Point(1552, 288), new PickUp(1552, 288, false, "health"));
+        powerUps.put(new Point(288, 672), new PickUp(288, 672, false, "speed"));
+        powerUps.put(new Point(1552, 672), new PickUp(1552, 672, false, "damage"));
+    }
+
     public void InitializeGame()
     {
         loadWorld();
         loadTanks();
         loadUnbreakableWalls();
         loadBreakableWalls();
+        loadPowerUps();
         music = new Audio("music");
         music.loopAudio();
     }
@@ -296,6 +310,67 @@ public class GameWorld extends JPanel implements Runnable
         this.t2.setY(928);
     }
 
+    public void pickUpCollision()
+    {
+        for(PickUp pickUp : powerUps.values())
+        {
+            if(!pickUp.isPickedUp() && t1.getBounds().intersects(pickUp.getBounds()))
+            {
+                pickUp.pickedUp();
+
+                String temp = pickUp.getPower();
+
+                switch(temp)
+                {
+                    case "damage":
+                        t2.increaseDamage();
+                        t1.decreaseSpeed();
+                        break;
+                    case "health":
+                        t1.setHealth();
+                        break;
+                    case "life":
+                        t1.gainLife();
+                        break;
+                    case "speed":
+                        t1.increaseSpeed();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        for(PickUp pickUp : powerUps.values())
+        {
+            if(!pickUp.isPickedUp() && t2.getBounds().intersects(pickUp.getBounds()))
+            {
+                pickUp.pickedUp();
+
+                String temp = pickUp.getPower();
+
+                switch(temp)
+                {
+                    case "damage":
+                        t1.increaseDamage();
+                        t2.decreaseSpeed();
+                        break;
+                    case "health":
+                        t2.setHealth();
+                        break;
+                    case "life":
+                        t2.gainLife();
+                        break;
+                    case "speed":
+                        t2.increaseSpeed();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
     public void tankCollision()
     {
         if(t1.getBounds().intersects(t2.getBounds()) && t2.getBounds().intersects(t1.getBounds()))
@@ -304,6 +379,8 @@ public class GameWorld extends JPanel implements Runnable
             {
                 t1.loseLife();
                 t2.loseLife();
+                t1.destroy(true);
+                t2.destroy(true);
                 resetPositions();
             }
         }
@@ -311,19 +388,18 @@ public class GameWorld extends JPanel implements Runnable
 
     public void rocketCollision()
     {
-        Iterator<Rocket> iterator = t1.getRockets().iterator();
-        while (iterator.hasNext())
-        {
-            Rocket rocket = iterator.next();
-            boolean removed = false;
+        List <Rocket> toBeDeleted = new ArrayList<>();
 
+        for (Rocket rocket : t1.getRockets())
+        {
+            boolean removed = false;
             if (rocket.getBounds().intersects(t2.getBounds()))
             {
+                rocket.destroy(true);
                 t2.loseHealth();
                 t2.impact(true);
-                iterator.remove();
+                toBeDeleted.add(rocket);
                 removed = true;
-                System.out.println("tank2 damaged");
             }
 
             if(!removed)
@@ -332,8 +408,9 @@ public class GameWorld extends JPanel implements Runnable
                 {
                     if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
                     {
+                        rocket.destroy(true);
                         wall.destroy(true);
-                        iterator.remove();
+                        toBeDeleted.add(rocket);
                         removed = true;
                         break;
                     }
@@ -341,19 +418,19 @@ public class GameWorld extends JPanel implements Runnable
             }
         }
 
-        iterator = t2.getRockets().iterator();
-        while (iterator.hasNext())
-        {
-            Rocket rocket = iterator.next();
-            boolean removed = false;
+        t1.getRockets().removeAll(toBeDeleted);
+        toBeDeleted.clear();
 
+        for (Rocket rocket : t2.getRockets())
+        {
+            boolean removed = false;
             if (rocket.getBounds().intersects(t1.getBounds()))
             {
+                rocket.destroy(true);
                 t1.loseHealth();
                 t1.impact(true);
-                iterator.remove();
+                toBeDeleted.add(rocket);
                 removed = true;
-                System.out.println("tank1 damaged");
             }
 
             if(!removed)
@@ -362,14 +439,18 @@ public class GameWorld extends JPanel implements Runnable
                 {
                     if(wall.isBreakable() && !wall.isDestroyed() && rocket.getBounds().intersects((wall.getBounds())))
                     {
+                        rocket.destroy(true);
                         wall.destroy(true);
-                        iterator.remove();
+                        toBeDeleted.add(rocket);
                         removed = true;
                         break;
                     }
                 }
             }
         }
+
+        t2.getRockets().removeAll(toBeDeleted);
+        toBeDeleted.clear();
     }
 
     public void checkHealth()
@@ -414,6 +495,8 @@ public class GameWorld extends JPanel implements Runnable
             winner = "Draw";
         }
 
+        GameConstants.setWinner(winner);
+
         return winner;
     }
 
@@ -449,6 +532,11 @@ public class GameWorld extends JPanel implements Runnable
         for(Wall wall : obstacleWalls.values())
         {
             wall.drawImage(buffer);
+        }
+
+        for(PickUp pickUp : powerUps.values())
+        {
+            pickUp.drawImage(buffer);
         }
 
         t1.drawImage(buffer);

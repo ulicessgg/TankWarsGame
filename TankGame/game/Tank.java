@@ -20,6 +20,7 @@ public class Tank
     private int lives;
     private double health;
     private double maxHealth;
+    private double dps;
     private BufferedImage img;
     private Map<Point, Wall> wallIntel;
     private List<Rocket> rockets = new ArrayList<>();
@@ -31,7 +32,7 @@ public class Tank
     private float vx;
     private float vy;
     private float angle;
-    private float R = 3;
+    private float R;
     private float ROTATIONSPEED = 1.50f;
     private boolean UpPressed;
     private boolean DownPressed;
@@ -45,11 +46,13 @@ public class Tank
         this.lives = lives;
         this.health = health;
         this.maxHealth = health;
+        this.dps = 16.67;
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.angle = angle;
+        this.R = 3;
         this.img = img;
         this.wallIntel = wallIntel;
     }
@@ -67,6 +70,11 @@ public class Tank
         return new Rectangle((int) x, (int) y, img.getWidth(), img.getHeight());
     }
 
+    void gainLife()
+    {
+        this.lives = lives + 1;
+    }
+
     void loseLife()
     {
         this.lives = lives - 1;
@@ -79,7 +87,7 @@ public class Tank
 
     void loseHealth()
     {
-        this.health = health - 16.67;
+        this.health = health - dps;
     }
 
     void setHealth()
@@ -90,6 +98,21 @@ public class Tank
     double getHealth()
     {
         return this.health;
+    }
+
+    void increaseDamage()
+    {
+        dps = dps * 2;
+    }
+
+    void increaseSpeed()
+    {
+        R = R * (float) 1.5;
+    }
+
+    void decreaseSpeed()
+    {
+        R = R / (float) 2;
     }
 
     public List<Rocket> getRockets()
@@ -350,9 +373,11 @@ public class Tank
             g2d.setColor(Color.GREEN);
             g2d.fillRect((int) x - 6, (int) y - 24, currentHealthWidth, 6);
 
-            for (MuzzleFlash flash : flashes) {
+            for (MuzzleFlash flash : flashes)
+            {
                 flash.drawImage(g2d);
-                for (Rocket rocket : rockets) {
+                for (Rocket rocket : rockets)
+                {
                     rocket.drawImage(g2d);
                 }
             }

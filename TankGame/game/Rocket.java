@@ -127,8 +127,11 @@ public class Rocket
         }
         if(isDestroyed())
         {
-            Graphics2D g2d = (Graphics2D) g;
-            thermite.drawImage(g2d);
+            if(thermite != null)
+            {
+                Graphics2D g2d = (Graphics2D) g;
+                thermite.drawImage(g2d);
+            }
         }
     }
 }
