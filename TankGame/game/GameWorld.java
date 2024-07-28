@@ -36,6 +36,7 @@ public class GameWorld extends JPanel implements Runnable
     private int miniMapWidth = GameConstants.GAME_SCREEN_WIDTH / 8;
     private int miniMapHeight = GameConstants.GAME_SCREEN_HEIGHT / 8;
     private final Launcher lf;
+    public String winner;
 
     public GameWorld(Launcher lf) {
         this.lf = lf;
@@ -58,7 +59,7 @@ public class GameWorld extends JPanel implements Runnable
 
                 if(gameOver())
                 {
-                    String winner = getWinner();
+                    getWinner();
                     System.out.println(winner);
                     SwingUtilities.invokeLater(() -> lf.setFrame("end"));
                     resetGame();
@@ -478,24 +479,29 @@ public class GameWorld extends JPanel implements Runnable
         return t1.getLives() == 0 || t2.getLives() == 0;
     }
 
+    public void setWinner(String winner)
+    {
+        this.winner = winner;
+    }
+
     public String getWinner()
     {
         String winner = null;
 
         if(t1.getLives() > 0 && t2.getLives() == 0)
         {
-            winner = "Player1";
+            winner = "Player 1 Wins!";
         }
         if(t1.getLives() == 0 && t2.getLives() > 0)
         {
-            winner = "Player2";
+            winner = "Player 2 Wins!";
         }
         if(t1.getLives() == 0 && t2.getLives() == 0)
         {
             winner = "Draw";
         }
 
-        GameConstants.setWinner(winner);
+        setWinner(winner);
 
         return winner;
     }

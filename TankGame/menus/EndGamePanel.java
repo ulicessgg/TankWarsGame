@@ -13,6 +13,7 @@ public class EndGamePanel extends JPanel {
 
     private BufferedImage menuBackground;
     private final Launcher lf;
+    private JLabel winnerLabel;
 
     public EndGamePanel(Launcher lf) {
         this.lf = lf;
@@ -26,19 +27,30 @@ public class EndGamePanel extends JPanel {
         this.setBackground(Color.BLACK);
         this.setLayout(null);
 
+        winnerLabel = new JLabel("");
+        winnerLabel.setFont(new Font("Courier New", Font.BOLD, 24));
+        winnerLabel.setForeground(Color.WHITE);
+        winnerLabel.setBounds(150, 273, 250, 50);
+
         JButton start = new JButton("Restart Game");
         start.setFont(new Font("Courier New", Font.BOLD, 24));
-        start.setBounds(150, 398, 250, 50);
+        start.setBounds(123, 348, 250, 50);
         start.addActionListener((actionEvent -> this.lf.setFrame("game")));
-
 
         JButton exit = new JButton("Exit");
         exit.setFont(new Font("Courier New", Font.BOLD, 24));
-        exit.setBounds(150, 498, 250, 50);
+        exit.setBounds(123, 448, 250, 50);
         exit.addActionListener((actionEvent -> this.lf.closeGame()));
 
+        this.add(winnerLabel);
         this.add(start);
         this.add(exit);
+    }
+
+    public void setWinner(String winner)
+    {
+        winnerLabel.setText(winner);
+        this.repaint();
     }
 
     @Override
