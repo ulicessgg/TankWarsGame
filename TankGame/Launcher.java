@@ -95,7 +95,7 @@ public class Launcher {
             {
                 // set the size of the jFrame to the expected size for the end panel
                 this.jf.setSize(GameConstants.END_MENU_SCREEN_WIDTH, GameConstants.END_MENU_SCREEN_HEIGHT);
-                this.endGame.setWinner(gamePanel.getWinner());
+                this.endGame.setWinner(gamePanel.getResult());
                 this.cl.show(mainPanel, type); // change current panel shown on main panel tp the panel denoted by type.
                 this.jf.setVisible(true); // show the JFrame
             }

@@ -484,7 +484,7 @@ public class GameWorld extends JPanel implements Runnable
         this.winner = winner;
     }
 
-    public String getWinner()
+    public void getWinner()
     {
         String winner = null;
 
@@ -502,7 +502,10 @@ public class GameWorld extends JPanel implements Runnable
         }
 
         setWinner(winner);
+    }
 
+    public String getResult()
+    {
         return winner;
     }
 
