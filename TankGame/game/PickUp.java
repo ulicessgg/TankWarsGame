@@ -20,12 +20,10 @@ import java.util.Objects;
 
 public class PickUp
 {
-
     private BufferedImage img;
     private float x;
     private float y;
     private Audio poweredUp;
-
     private boolean isPickedUp;
     private String power;
 

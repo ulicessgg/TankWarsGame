@@ -23,8 +23,8 @@ import java.util.ArrayList;
 
 public class GameWorld extends JPanel implements Runnable
 {
-    private int windowWidth = GameConstants.SCREEN_WIDTH / 2;
-    private int windowHeight = GameConstants.SCREEN_HEIGHT;
+    private final int windowWidth = GameConstants.SCREEN_WIDTH / 2;
+    private final int windowHeight = GameConstants.SCREEN_HEIGHT;
     private BufferedImage world;
     private BufferedImage background;
     private Tank t1;
@@ -33,8 +33,8 @@ public class GameWorld extends JPanel implements Runnable
     private Map<Point, Wall> obstacleWalls = new HashMap<>();
     private Map<Point, PickUp> powerUps = new HashMap<>();
     private Audio music;
-    private int miniMapWidth = GameConstants.GAME_SCREEN_WIDTH / 8;
-    private int miniMapHeight = GameConstants.GAME_SCREEN_HEIGHT / 8;
+    private final int miniMapWidth = GameConstants.GAME_SCREEN_WIDTH / 8;
+    private final int miniMapHeight = GameConstants.GAME_SCREEN_HEIGHT / 8;
     private final Launcher lf;
     public String winner;
 
@@ -94,8 +94,8 @@ public class GameWorld extends JPanel implements Runnable
         try
         {
             background = ImageIO.read(
-                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/background.bmp"),
-                            "Could not find background.bmp")
+                    Objects.requireNonNull(GameWorld.class.getClassLoader().getResource("TankGame/resources/Background.bmp"),
+                            "Could not find Background.bmp")
             );
         }
         catch (IOException ex)
@@ -461,7 +461,6 @@ public class GameWorld extends JPanel implements Runnable
             t1.loseLife();
             t1.setHealth();
             t1.destroy(true);
-            System.out.println("tank1 lost a life");
             resetPositions();
         }
         if(t2.getHealth() <= 0)
@@ -469,7 +468,6 @@ public class GameWorld extends JPanel implements Runnable
             t2.loseLife();
             t2.setHealth();
             t2.destroy(true);
-            System.out.println("tank2 lost a life");
             resetPositions();
         }
     }

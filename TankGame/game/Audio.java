@@ -1,42 +1,47 @@
 package TankGame.game;
 
 import javax.sound.sampled.*;
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class Audio
 {
     private Clip sound;
-    private AudioInputStream file;
-    private String path;
 
     Audio(String wav)
     {
-        switch(wav)
-        {
-            case "music":
-                path = "TankGame/resources/Music.wav";
-                break;
-            case "muzzle":
-                path = "TankGame/resources/Explosion_small.wav";
-                break;
-            case "small":
-                path = "TankGame/resources/Explosion_small.wav";
-                break;
-            case "large":
-                path = "TankGame/resources/Explosion_large.wav";
-                break;
-            case "power":
-                path = "TankGame/resources/PoweredUp.wav";
-                break;
-            default:
-                break;
-        }
-
+        InputStream audioSrc;
         try
         {
-            file = AudioSystem.getAudioInputStream(new File(path));
+            switch(wav)
+            {
+                case "music":
+                    audioSrc = getClass().getClassLoader().getResourceAsStream("TankGame/resources/Music.wav");
+                    break;
+                case "muzzle":
+                    audioSrc = getClass().getClassLoader().getResourceAsStream("TankGame/resources/Explosion_small.wav");
+                    break;
+                case "small":
+                    audioSrc = getClass().getClassLoader().getResourceAsStream("TankGame/resources/Explosion_small.wav");
+                    break;
+                case "large":
+                    audioSrc = getClass().getClassLoader().getResourceAsStream("TankGame/resources/Explosion_large.wav");
+                    break;
+                case "power":
+                    audioSrc = getClass().getClassLoader().getResourceAsStream("TankGame/resources/PoweredUp.wav");
+                    break;
+                default:
+                    audioSrc = null;
+                    break;
+            }
 
+            if (audioSrc == null) {
+                throw new IOException("Audio file not found: " + wav);
+            }
+
+            BufferedInputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream file = AudioSystem.getAudioInputStream(bufferedIn);
             AudioFormat type = file.getFormat();
             DataLine.Info ext = new DataLine.Info(Clip.class, type);
 
