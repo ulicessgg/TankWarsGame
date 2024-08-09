@@ -25,10 +25,10 @@ The jar folder will be used to store the built jar of your term-project.
         a. git clone https://github.com/csc413-SFSU-SU2024/csc413-tankgame-ulicessgg.git
         b. or download the zip folder from the repository linked
     2. If using Intellij you can run the IDE and on the top right click Open.
-        a. From here navigate to the directory in which the interpreter folder is present and click ok
+        a. From here navigate to the directory in which the game folder is present and click ok
 
 ## Steps to Build your Project:
-    1. Once the project folder is open navigate to the interpreter folder
+    1. Once the project folder is open navigate to the game folder
         a. Before building you must create a new configuration for the interpreter
             i. In the top right of the IDE to the left of the run button click on the arrow beside Current File
             ii. Click on Edit Configurations
@@ -45,9 +45,11 @@ The jar folder will be used to store the built jar of your term-project.
         b. To build Ctrl/CMND+F9
 
 ## Steps to run your Project:
-    1. After building the project you can run the calculator with the following
+    1. After building the project you can run the game with the following
         a. To run with keystrokes use Shift+F10 or
         b. To run with the mouse and the IDE UI click the run button on the top right
+        c. To run with the terminal enter cd pathto/csc413-tankgame-ulicessgg/jar and enter java -jar csc413-tankgame-ulicessgg.jar
+        d. To run with the jar file in your file explorer/finder go to the jar folder in the game directory and double click on csc413-tankgame-ulicessgg.jar
 
 ## Controls to play your Game:
 
